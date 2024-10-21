@@ -25,7 +25,8 @@ import java.util.List;
 public class RoleController {
     @Autowired
     private RoleService roleService;
-    
+
+    @Operation(summary = "获取角色列表")
     @PreAuthorize("@ss.hasAnyPermi('system:role:list')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllRoles() {
@@ -35,6 +36,7 @@ public class RoleController {
     }
 
     @Operation(summary = "获取角色")
+    @PreAuthorize("@ss.hasAnyPermi('system:role:query')")
     @PostMapping("/getRole")
     public ResponseEntity<ApiResponse<?>> getRole(@RequestBody Long roleId) {
         SysRole byId = roleService.findById(roleId);
@@ -43,6 +45,7 @@ public class RoleController {
     }
 
     @Operation(summary = "创建角色")
+    @PreAuthorize("@ss.hasAnyPermi('system:role:add')")
     @PostMapping("/createRole")
     public ResponseEntity<ApiResponse<?>> addRole(@RequestBody SysRole role) {
         SysRole role1 = roleService.createRole(role);
@@ -51,6 +54,7 @@ public class RoleController {
     }
 
     @Operation(summary = "修改角色")
+    @PreAuthorize("@ss.hasAnyPermi('system:role:edit')")
     @PostMapping("/updateRole")
     public ResponseEntity<ApiResponse<?>> updateRole(@RequestBody SysRole role) {
         ApiResponse<SysRole> response = roleService.updateRole(role);
@@ -58,6 +62,7 @@ public class RoleController {
     }
 
     @Operation(summary = "删除角色")
+    @PreAuthorize("@ss.hasAnyPermi('system:role:remove')")
     @PostMapping("/deleteRole")
     public ResponseEntity<ApiResponse<?>> deleteRole(@RequestBody Long roleId) {
         ApiResponse<?> response = roleService.softDeleteRole(roleId);
@@ -70,6 +75,7 @@ public class RoleController {
      * @return menu
      */
     @Operation(summary = "添加菜单 -> 角色")
+    @PreAuthorize("@ss.hasAnyPermi('system:role:edit')")
     @PostMapping("/addMenuToRole")
     public ResponseEntity<ApiResponse<?>> addPermissionToRole(@RequestBody AuthMenuRequest menuRequest)  {
         ApiResponse<?> response = roleService.addMenuToRole(menuRequest.getRoleId(), menuRequest.getMenuIds());

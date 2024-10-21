@@ -14,6 +14,7 @@ import com.example.springboottyy.utils.ApiResponse;
 import com.example.springboottyy.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -33,12 +34,6 @@ public class MenuService {
 
     @Autowired
     private SysUserRepository userRepository;
-
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private SysMenuRepository sysMenuRepository;
 
     public ApiResponse<?> findAll() {
         List<SysMenu> all = menuRepository.findAll();
@@ -87,21 +82,21 @@ public class MenuService {
     }
 
     /**
-     * TODO 这里存在互调用明天改一下
-     *
      * @param user
-     * @return
+     * @return Set<String>
      */
     // 获取角色菜单
-    public ApiResponse<?> getRoleMenu(SysUser user) {
-        ApiResponse<Set<SysRole>> response = roleService.getRolesUser(user);
-        Set<SysRole> roles = response.getData();
-        ArrayList<Long> ids = new ArrayList<>();
-        for (SysRole role : roles) {
-            ids.add(role.getId());
+    public ApiResponse<Set<String>> getRoleMenu(SysUser user) {
+        Optional<SysUser> optionalSysUser = userRepository.findById(user.getId());
+        if (optionalSysUser.isPresent()) {
+            SysUser sysUser = optionalSysUser.get();
+            Set<SysRole> roles = sysUser.getRoles();
+            if (!ObjectUtils.isEmpty(roles)) {
+                Set<String> perms = getPermissionsFromRoles(roles);
+                return ApiResponse.success("查询成功",perms);
+            }
         }
-        List<SysMenu> menus = sysMenuRepository.findAllById(ids);
-        return ApiResponse.success("查询成功", menus);
+        return ApiResponse.error("查询失败");
     }
 
     /*根据角色id查询菜单*/

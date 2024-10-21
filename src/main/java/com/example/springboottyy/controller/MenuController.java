@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -28,6 +29,7 @@ public class MenuController {
     private MenuService menuService;
 
     @Operation(summary = "菜单列表")
+    @PreAuthorize("@ss.hasPermi('system:menu:list')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllMenu() {
         ApiResponse<?> response = menuService.findAll();
@@ -35,6 +37,7 @@ public class MenuController {
     }
 
     @Operation(summary = "查询菜单")
+    @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @PostMapping("/getMenu")
     public ResponseEntity<ApiResponse<?>> getMenuById(@RequestBody Long id) {
         ApiResponse<?> response = menuService.findById(id);
@@ -42,6 +45,7 @@ public class MenuController {
     }
 
     @Operation(summary = "创建菜单")
+    @PreAuthorize("@ss.hasPermi('system:menu:add')")
     @PostMapping("/createMenu")
     public ResponseEntity<ApiResponse<?>> createMenu(@Valid @RequestBody SysMenu menu) {
         ApiResponse<?> permission1 = menuService.createMenu(menu);
@@ -49,6 +53,7 @@ public class MenuController {
     }
 
     @Operation(summary = "修改菜单")
+    @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @PostMapping("/updateMenu")
     public ResponseEntity<ApiResponse<?>> updateMenu(@RequestBody SysMenu menu) {
         ApiResponse<?> permission1 = menuService.updateMenu(menu);
@@ -56,6 +61,7 @@ public class MenuController {
     }
 
     @Operation(summary = "删除菜单")
+    @PreAuthorize("@ss.hasPermi('system:menu:remove')")
     @PostMapping("/deleteMenu")
     public ResponseEntity<ApiResponse<?>> deleteMenu(@RequestBody Long id) {
         ApiResponse<?> response = menuService.softDeleteMenu(id);

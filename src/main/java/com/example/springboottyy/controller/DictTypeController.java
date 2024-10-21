@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ public class DictTypeController {
     private DictTypeService dictTypeService;
 
     @Operation(summary = "获取字典类型列表")
+    @PreAuthorize("@ss.hasPermi('system:dict:list')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllDictType() {
         ApiResponse<?> response = dictTypeService.findAllDictTypes();
@@ -35,6 +37,7 @@ public class DictTypeController {
     }
 
     @Operation(summary = "获取字典类型")
+    @PreAuthorize("@ss.hasPermi('system:dict:query')")
     @PostMapping("/getDictType")
     public ResponseEntity<ApiResponse<?>> getDictTypeById(@RequestBody Long id) {
         ApiResponse<?> response = dictTypeService.findByDictTypeId(id);
@@ -42,6 +45,7 @@ public class DictTypeController {
     }
 
     @Operation(summary = "新增字典类型")
+    @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @PostMapping("/addDictType")
     public ResponseEntity<ApiResponse<?>> addDictType(@RequestBody SysDictType dictType) {
         ApiResponse<?> response = dictTypeService.createDictType(dictType);
@@ -49,6 +53,7 @@ public class DictTypeController {
     }
 
     @Operation(summary = "修改字典类型")
+    @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @PostMapping("/updateDictType")
     public ResponseEntity<ApiResponse<?>> updateDictType(@RequestBody SysDictType dictType) {
         ApiResponse<?> response = dictTypeService.updateDictType(dictType);
@@ -56,6 +61,7 @@ public class DictTypeController {
     }
 
     @Operation(summary = "停用字典类型")
+    @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @PostMapping("/enableDictType")
     public ResponseEntity<ApiResponse<?>> enableDictType(@RequestBody List<Long> ids) {
         ApiResponse<?> response = dictTypeService.enableDictType(ids);
@@ -63,6 +69,7 @@ public class DictTypeController {
     }
 
     @Operation(summary = "启用字典类型")
+    @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @PostMapping("/unEnableDictType")
     public ResponseEntity<ApiResponse<?>> unEnableDictType(@RequestBody List<Long> ids) {
         ApiResponse<?> response = dictTypeService.unEnableDictType(ids);
@@ -70,6 +77,7 @@ public class DictTypeController {
     }
 
     @Operation(summary = "获取字典类型下的所以字典数据")
+    @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @PostMapping("/findAllDataOfType")
     public ResponseEntity<ApiResponse<?>> getAllDataOfType(@RequestBody Long id) {
         ApiResponse<?> response = dictTypeService.findAllDataOfType(id);

@@ -2,10 +2,7 @@ package com.example.springboottyy.service;
 
 import com.example.springboottyy.dto.UserDto;
 import com.example.springboottyy.dto.mapper.UserMapper;
-import com.example.springboottyy.model.LoginUser;
-import com.example.springboottyy.model.SysMenu;
-import com.example.springboottyy.model.SysRole;
-import com.example.springboottyy.model.SysUser;
+import com.example.springboottyy.model.*;
 import com.example.springboottyy.repository.SysUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +14,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import java.nio.file.OpenOption;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @Author: Insight
@@ -31,6 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
     @Autowired
     private SysUserRepository userRepository;
+
+    @Autowired
+    private SysPermissionService permissionService;
 
     @Autowired
     private UserMapper userMapper;
@@ -49,10 +53,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + menu.getMenuName()));
             }
         }
+        Set<String> permission = permissionService.getMenuPermission(user);
+        Long deptId = Optional.ofNullable(user.getDept()).map(SysDept::getId).orElse(null);
         return new LoginUser(
                 user.getId(),
-                null,
+                deptId,
                 user,
+                permission,
                 authorities
         );
     }

@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @Operation(summary = "获取用户")
-    @PreAuthorize("@ss.hasAnyPermi('ss:user:list')")
+    @PreAuthorize("@ss.hasAnyPermi('system:user:query')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getUserById(@PathVariable Long id) {
         ApiResponse<?> response = userService.getUserById(id);
@@ -48,12 +48,14 @@ public class UserController {
     }
 
     @Operation(summary = "创建用户")
+    @PreAuthorize("@ss.hasPermi('system:user:add')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createUser(@Valid @RequestBody SysUser user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
     @Operation(summary = "删除用户")
+    @PreAuthorize("@ss.hasPermi('system:user:remove')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> softDeleteUser(@PathVariable Long id) {
         ApiResponse<Boolean> response = userService.softDeleteUser(id);
@@ -62,6 +64,7 @@ public class UserController {
 
     /*开启全部用户*/
     @Operation(summary = "开启全部用户")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/upUser")
     public ResponseEntity<ApiResponse<ArrayList<SysUser>>> upUser() {
         ApiResponse<ArrayList<SysUser>> response = userService.upUser();
@@ -70,6 +73,7 @@ public class UserController {
 
     /* 关闭用户 */
     @Operation(summary = "关闭用户")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/downUsers")
     public ResponseEntity<ApiResponse<ArrayList<SysUser>>> downUsers(@RequestBody List<Long> ids) {
         ApiResponse<ArrayList<SysUser>> response = userService.downUsers(ids);
@@ -78,6 +82,7 @@ public class UserController {
 
     /*添加角色*/
     @Operation(summary = "添加角色")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/addAuthRole")
     public ResponseEntity<ApiResponse<?>> addRole(@Valid @RequestBody AuthRoleRequest authRoleRequest) {
         ApiResponse<?> response = userService.addUserRole(authRoleRequest.getUserId(), authRoleRequest.getRoleId());
@@ -86,6 +91,7 @@ public class UserController {
 
     /*添加部门*/
     @Operation(summary = "添加部门")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/addDept")
     public ResponseEntity<ApiResponse<?>> addPermission(@Valid @RequestBody AuthDeptRequest deptRequest){
         ApiResponse<SysUser> response = userService.addUserDept(deptRequest.getUserId(), deptRequest.getDeptId());
@@ -94,6 +100,7 @@ public class UserController {
 
     /*添加岗位*/
     @Operation(summary = "添加岗位")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/addPost")
     public ResponseEntity<ApiResponse<?>> addDept(@Valid @RequestBody AuthPostRequest postRequest){
         ApiResponse<?> response = userService.addUserPost(postRequest.getUserId(), postRequest.getPostIds());

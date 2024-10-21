@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ public class DeptController {
     private DeptService deptService;
 
     @Operation(description = "部门列表")
+    @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllDept() {
         ApiResponse<?> response = deptService.findAll();
@@ -38,6 +40,7 @@ public class DeptController {
     }
 
     @Operation(summary = "获取部门")
+    @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @PostMapping("/getDept")
     public ResponseEntity<ApiResponse<?>> getDept(@Valid @RequestBody DeptDto deptDto) {
         ApiResponse<?> response = deptService.findDeptById(deptDto.getId());
@@ -45,6 +48,7 @@ public class DeptController {
     }
 
     @Operation(description = "新建部门")
+    @PreAuthorize("@ss.hasPermi('system:menu:add')")
     @PostMapping("/createDept")
     public ResponseEntity<ApiResponse<?>> createDepartment(@RequestBody SysDept dept) {
         ApiResponse<?> response = deptService.createDept(dept);
@@ -52,6 +56,7 @@ public class DeptController {
     }
 
     @Operation(description = "删除部门")
+    @PreAuthorize("@ss.hasPermi('system:menu:remove')")
     @PostMapping("/deleteDept")
     public ResponseEntity<ApiResponse<?>> deleteDept(@RequestBody List<Long> deptIds) {
         ApiResponse<?> response = deptService.softDeleteDept(deptIds);
@@ -62,6 +67,7 @@ public class DeptController {
      * 关闭部门
      */
     @Operation(description = "关闭部门")
+    @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @PostMapping("/enabledDept")
     public ResponseEntity<ApiResponse<?>> enabledDept(@RequestBody List<Long> deptIds) {
         ApiResponse<?> response = deptService.enabledDept(deptIds);
@@ -72,6 +78,7 @@ public class DeptController {
      * 开启部门
      */
     @Operation(description = "开启部门")
+    @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @PostMapping("/unEnableDept")
     public ResponseEntity<ApiResponse<?>> unEnableDept(@RequestBody List<Long> deptIds) {
         ApiResponse<?> response = deptService.unEnabledDept(deptIds);

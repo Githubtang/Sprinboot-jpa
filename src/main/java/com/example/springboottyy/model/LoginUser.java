@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -27,10 +28,11 @@ public class LoginUser implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public LoginUser(Long id, Long deptId, SysUser user, Collection<? extends GrantedAuthority> authorities) {
+    public LoginUser(Long id, Long deptId, SysUser user,Set<String> permissions, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.deptId = deptId;
         this.user = user;
+        this.permissions = permissions;
         this.authorities = authorities;
     }
 

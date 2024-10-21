@@ -76,6 +76,5 @@ public class LoginController {
         Long userId = SecurityUtils.getUserId();
         ApiResponse<Set<String>> menus = menuService.selectMenuPermsByUserId(userId);
         return ResponseEntity.ok(menus);
-
     }
 }

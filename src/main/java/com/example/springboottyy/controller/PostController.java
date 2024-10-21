@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ public class PostController {
     private PostService postService;
 
     @Operation(description = "岗位列表")
+    @PreAuthorize("@ss.hasPermi('system:post:list')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllPost() {
         ApiResponse<?> response = postService.findAllPost();
@@ -36,6 +38,7 @@ public class PostController {
     }
 
     @Operation(summary = "获取岗位")
+    @PreAuthorize("@ss.hasPermi('system:post:query')")
     @PostMapping("/getPost")
     public ResponseEntity<ApiResponse<?>> getPostById(@RequestBody Long postId) {
         ApiResponse<?> response = postService.findPostById(postId);
@@ -43,6 +46,7 @@ public class PostController {
     }
 
     @Operation(summary = "创建岗位")
+    @PreAuthorize("@ss.hasPermi('system:post:add')")
     @PostMapping("/createPost")
     public ResponseEntity<ApiResponse<?>> createPost(@RequestBody SysPost post) {
         ApiResponse<?> response = postService.createPost(post);
@@ -50,6 +54,7 @@ public class PostController {
     }
 
     @Operation(summary = "修改岗位")
+    @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @PostMapping("/updatePost")
     public ResponseEntity<ApiResponse<?>> updatePost(@RequestBody SysPost post) {
         ApiResponse<?> response = postService.updatePost(post);
@@ -57,6 +62,7 @@ public class PostController {
     }
 
     @Operation(summary = "删除岗位")
+    @PreAuthorize("@ss.hasPermi('system:post:remove')")
     @PostMapping("/deletePost")
     public ResponseEntity<ApiResponse<?>> deletePost(@RequestBody List<Long> postIds) {
         ApiResponse<?> response = postService.softDeletePost(postIds);
@@ -67,6 +73,7 @@ public class PostController {
      * 关闭岗位
      */
     @Operation(summary = "关闭岗位")
+    @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @PostMapping("/enablePost")
     public ResponseEntity<ApiResponse<?>> enablePost(@RequestBody List<Long> postIds) {
         ApiResponse<?> response = postService.enabledPost(postIds);
@@ -77,6 +84,7 @@ public class PostController {
      * 开启岗位
      */
     @Operation(summary = "开启岗位")
+    @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @PostMapping("/unEnablePost")
     public ResponseEntity<ApiResponse<?>> unEnablePost(@RequestBody List<Long> postIds) {
         ApiResponse<?> response = postService.unEnabledPost(postIds);
