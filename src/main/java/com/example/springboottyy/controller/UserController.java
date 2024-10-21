@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class UserController {
     private UserService userService;
 
     @Operation(summary = "获取用户列表")
+    @PreAuthorize("@ss.hasPermi('system:user:list')")
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllUsers() {
         ApiResponse<?> response = userService.findAll();
@@ -38,6 +40,7 @@ public class UserController {
     }
 
     @Operation(summary = "获取用户")
+    @PreAuthorize("@ss.hasAnyPermi('ss:user:list')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getUserById(@PathVariable Long id) {
         ApiResponse<?> response = userService.getUserById(id);

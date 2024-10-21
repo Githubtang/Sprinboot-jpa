@@ -34,6 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -43,7 +44,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         HashSet<GrantedAuthority> authorities = new HashSet<>();
         for (SysRole role : user.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleKey()));
             for (SysMenu menu : role.getMenus()) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + menu.getMenuName()));
             }

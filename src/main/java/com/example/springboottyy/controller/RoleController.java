@@ -26,8 +26,8 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
     
-    @PreAuthorize("hasRole('admin')")
-    @GetMapping
+    @PreAuthorize("@ss.hasAnyPermi('system:role:list')")
+    @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllRoles() {
         List<SysRole> all = roleService.findAll();
         ApiResponse<?> response = new ApiResponse<>("200", "success", all);

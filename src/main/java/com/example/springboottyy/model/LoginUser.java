@@ -1,16 +1,10 @@
 package com.example.springboottyy.model;
 
-import com.example.springboottyy.dto.mapper.UserMapper;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,7 +27,7 @@ public class LoginUser implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public LoginUser(Long id,Long deptId,SysUser user,Collection<? extends GrantedAuthority> authorities) {
+    public LoginUser(Long id, Long deptId, SysUser user, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.deptId = deptId;
         this.user = user;
@@ -59,6 +53,5 @@ public class LoginUser implements UserDetails {
     public boolean isEnabled() {
         return user.isEnabled();
     }
-
 
 }

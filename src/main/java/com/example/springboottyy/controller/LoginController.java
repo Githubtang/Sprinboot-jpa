@@ -1,13 +1,9 @@
 package com.example.springboottyy.controller;
 
-import com.example.springboottyy.dto.UserDto;
 import com.example.springboottyy.dto.request.LoginRequest;
 import com.example.springboottyy.model.LoginUser;
-import com.example.springboottyy.model.SysRole;
-import com.example.springboottyy.service.LoginService;
-import com.example.springboottyy.service.MenuService;
-import com.example.springboottyy.service.RoleService;
-import com.example.springboottyy.service.UserService;
+import com.example.springboottyy.model.SysUser;
+import com.example.springboottyy.service.*;
 import com.example.springboottyy.utils.ApiResponse;
 import com.example.springboottyy.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,12 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @Author: Insight
@@ -35,6 +30,9 @@ import java.util.List;
 public class LoginController {
 
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    @Autowired
+    private SysPermissionService permissionService;
+
     @Autowired
     private LoginService loginService;
 
@@ -60,19 +58,24 @@ public class LoginController {
     @Operation(summary = "获取用户信息")
     @PostMapping("/getInfo")
     public ResponseEntity<ApiResponse<?>> getInfo() {
-        LoginUser user = SecurityUtils.getUser();
-        ApiResponse<Object> response = ApiResponse.success("用户信息", user);
+        SysUser user = SecurityUtils.getLoginUser().getUser();
+        Set<String> roles = permissionService.getRolePermission(user);
+        Set<String> permissions = permissionService.getMenuPermission(user);
+        ApiResponse<Object> response = ApiResponse.success("用户信息");
+        response.put("user",user);
+        response.put("roles",roles);
+        response.put("permissions",permissions);
         return ResponseEntity.ok(response);
     }
 
     /**
      * 获取路由
      */
-//    @PostMapping("/getRouters")
-//    public ResponseEntity<ApiResponse<?>> getRouters() {
-//        Long userId = SecurityUtils.getUserId();
-//        ApiResponse<?> userById = userService.getUserById(userId);
-//        return ResponseEntity.ok(userById);
-//
-//    }
+    @PostMapping("/getRouters")
+    public ResponseEntity<ApiResponse<?>> getRouters() {
+        Long userId = SecurityUtils.getUserId();
+        ApiResponse<Set<String>> menus = menuService.selectMenuPermsByUserId(userId);
+        return ResponseEntity.ok(menus);
+
+    }
 }

@@ -42,21 +42,32 @@ public class SysMenu {
     @Schema(description = "路由参数")
     private String query;
 
+    /** 路由名称，默认和路由地址相同的驼峰格式（注意：因为vue3版本的router会删除名称相同路由，为避免名字的冲突，特殊情况可以自定义） */
+    private String routeName;
+
     @Schema(description = "是否为外链（0是 1否）")
-    private int isFrame;
+    private String isFrame;
 
     @Schema(description = "是否缓存（0缓存 1不缓存）")
-    private int isCache;
+    private String isCache;
 
     @Schema(description = "菜单类型（M目录 C菜单 F按钮）")
     @Column(length = 1)
-    private char menuType;
+    private String menuType;
 
     @Schema(description = "菜单状态(true删除 false正常)")
     private boolean deleted = Boolean.FALSE;
 
     @Schema(description = "菜单状态(true启用 false停用)")
     private boolean enabled = Boolean.TRUE;
+
+    /** 显示状态（0显示 1隐藏） */
+    @Schema(title = "显示状态", description = "0显示 1隐藏")
+    private String visible;
+
+    /** 菜单状态（0正常 1停用） */
+    @Schema(title = "菜单状态", description = "0正常 1停用")
+    private String status;
 
     /**
      * 权限字符串

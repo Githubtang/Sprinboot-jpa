@@ -10,6 +10,7 @@ import com.example.springboottyy.repository.SysUserRepository;
 import com.example.springboottyy.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -69,11 +70,6 @@ public class RoleService {
             return new ApiResponse<>("200", "roles", roles);
         }
         return ApiResponse.error("role not font");
-//        Set<SysRole> roles = user.getRoles();
-//        if (roles.isEmpty()) {
-//            return new ApiResponse<>("400", "role not font", null);
-//        }
-
     }
 
     // 角色添加菜单
@@ -92,6 +88,30 @@ public class RoleService {
         }
         role.setMenus(new LinkedHashSet<>(menus));
         roleRepository.save(role);
-        return new ApiResponse<>("200", "Permissions added successfully", null);
+        return new ApiResponse<>("200", "menus added successfully", null);
     }
+
+    /*根据用户id查询角色权限*/
+    public ApiResponse<Set<String>> selectRolePermissionByUserId(Long userId) {
+        Optional<SysUser> optional = userRepository.findById(userId);
+        if (optional.isPresent()) {
+            SysUser user = optional.get();
+            Set<SysRole> roles = user.getRoles();
+            Set<String> perms = getPermissionsFromRoles(roles);
+            return ApiResponse.success("查询成功", perms);
+        }
+        return ApiResponse.error("查询失败");
+    }
+
+    /*从角色集合中提取权限*/
+    public Set<String> getPermissionsFromRoles(Set<SysRole> roles) {
+        Set<String> perms = new HashSet<>();
+        for (SysRole role : roles) {
+           if(!ObjectUtils.isEmpty(role)) {
+               perms.addAll(Arrays.asList(role.getRoleKey().trim().split(",")));
+           }
+        }
+        return perms;
+    }
+
 }

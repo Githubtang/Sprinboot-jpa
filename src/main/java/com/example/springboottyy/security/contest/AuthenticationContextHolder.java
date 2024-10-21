@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 
 /**
  * @Author: Insight
- * @Description: TODO 身份信息
+ * @Description: TODO 身份验证信息
  * @Date: 2024/9/25 20:24
  * @Version: 1.0
  */

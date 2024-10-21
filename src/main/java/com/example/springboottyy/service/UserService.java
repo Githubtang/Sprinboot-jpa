@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -177,6 +179,18 @@ public class UserService {
         return new ApiResponse<>("filed", "useraddrole filed", null);
     }
 
+    /*用户查询角色*/
+    @Transactional
+    public ApiResponse<Set<SysRole>> findRolesByUserId(Long userId) {
+        Optional<SysUser> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return ApiResponse.error("user not fount ", null);
+        }
+        SysUser sysUser = user.get();
+        Set<SysRole> roles = sysUser.getRoles();
+        return ApiResponse.success("查询成功",roles);
+
+    }
     /*用户新增岗位*/
     @Transactional
     public ApiResponse<?> addUserPost(Long userId, List<Long> postIds) {

@@ -52,6 +52,9 @@ public class SysRole {
     @Schema(description = "修改时间")
     private LocalDateTime updatedAt;
 
+    @Transient
+    @Schema(description = "角色菜单权限")
+    private Set<String> permissions;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore

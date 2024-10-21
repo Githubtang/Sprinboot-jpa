@@ -18,6 +18,7 @@ import java.util.Set;
 @Data
 @Entity
 public class SysUser {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +53,11 @@ public class SysUser {
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public boolean isAdmin() {
+        return this.getRoles().stream().anyMatch(sysRole ->
+                sysRole.getRoleKey().contains("admin"));
     }
 
     // 用户角色

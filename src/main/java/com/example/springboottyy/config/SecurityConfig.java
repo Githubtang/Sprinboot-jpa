@@ -47,8 +47,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login","api/users").permitAll() // 允许所有人访问 "/public/**" 路径
-//                        .requestMatchers("/api/roles/**", "/api/menu/**").hasRole("admin")
+                        .requestMatchers("/login","/register").permitAll() // 允许所有人访问 "/public/**" 路径
+//                        .requestMatchers("/api/role/**", "/api/menu/**").hasRole("admin")
                         .requestMatchers(HttpMethod.GET, "/", "/**.html", "/**.css", "/**.js","/**.ico",
                                 "/profile/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs",

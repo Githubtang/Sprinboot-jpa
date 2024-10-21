@@ -28,14 +28,14 @@ public class MenuController {
     private MenuService menuService;
 
     @Operation(summary = "菜单列表")
-    @GetMapping
+    @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllMenu() {
         ApiResponse<?> response = menuService.findAll();
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "查询菜单")
-    @GetMapping("/getMenu")
+    @PostMapping("/getMenu")
     public ResponseEntity<ApiResponse<?>> getMenuById(@RequestBody Long id) {
         ApiResponse<?> response = menuService.findById(id);
         return ResponseEntity.ok(response);
