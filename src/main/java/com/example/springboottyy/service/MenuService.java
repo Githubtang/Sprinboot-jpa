@@ -81,24 +81,6 @@ public class MenuService {
         return ApiResponse.error();
     }
 
-    /**
-     * @param user
-     * @return Set<String>
-     */
-    // 获取角色菜单
-    public ApiResponse<Set<String>> getRoleMenu(SysUser user) {
-        Optional<SysUser> optionalSysUser = userRepository.findById(user.getId());
-        if (optionalSysUser.isPresent()) {
-            SysUser sysUser = optionalSysUser.get();
-            Set<SysRole> roles = sysUser.getRoles();
-            if (!ObjectUtils.isEmpty(roles)) {
-                Set<String> perms = getPermissionsFromRoles(roles);
-                return ApiResponse.success("查询成功",perms);
-            }
-        }
-        return ApiResponse.error("查询失败");
-    }
-
     /*根据角色id查询菜单*/
     public ApiResponse<Set<String>> selectMenuPermsByRoleId(Long roleId) {
         Optional<SysRole> role = roleRepository.findById(roleId);
@@ -115,6 +97,29 @@ public class MenuService {
     }
 
     /*根据用户id查询菜单*/
+    public ApiResponse<List<SysMenu>> selectMenuTreeByUserId(Long userId) {
+        Optional<SysUser> optionalSysUser = userRepository.findById(userId);
+        if (optionalSysUser.isPresent()) {
+            List<SysMenu> menus = null;
+            SysUser user = optionalSysUser.get();
+            if (user.isAdmin())
+            {
+                menus = menuRepository.findAll();
+            }
+            else
+            {
+                Set<SysRole> roles = user.getRoles();
+                if (!ObjectUtils.isEmpty(roles)) {
+                    menus = getMenuFormRoles(roles);
+                }
+            }
+            assert menus != null;
+            return ApiResponse.success("查询成功",getChildPerms(menus, 0L));
+        }
+        return ApiResponse.error("查询失败");
+    }
+
+    /*根据用户id查询权限*/
     public ApiResponse<Set<String>> selectMenuPermsByUserId(Long userId) {
         Optional<SysUser> optional = userRepository.findById(userId);
         if (optional.isEmpty()) {
@@ -138,6 +143,16 @@ public class MenuService {
             }
         }
         return perms;
+    }
+
+    /*从角色中提取菜单*/
+    public List<SysMenu> getMenuFormRoles(Set<SysRole> roles) {
+        List<SysMenu> menus = new ArrayList<>();
+        for (SysRole role : roles) {
+            Set<SysMenu> menus1 = role.getMenus();
+            menus.addAll(menus1);
+        }
+        return menus;
     }
 
     /*构建前端路由所需要的菜单*/
@@ -205,7 +220,7 @@ public class MenuService {
      * 获取路由名称，如没有配置路由名称则取路由地址
      *
      * @param name 路由名称
-     * @param path       路由地址
+     * @param path 路由地址
      * @return 路由名称（驼峰格式）
      */
     public String getRouteName(String name, String path) {
@@ -270,12 +285,12 @@ public class MenuService {
      * @param parentId 传入的父节点ID
      * @return String
      */
-    public List<SysMenu> getChildPerms(List<SysMenu> list, int parentId) {
+    public List<SysMenu> getChildPerms(List<SysMenu> list, Long parentId) {
         List<SysMenu> returnList = new ArrayList<SysMenu>();
         for (Iterator<SysMenu> iterator = list.iterator(); iterator.hasNext(); ) {
             SysMenu t = (SysMenu) iterator.next();
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
-            if (t.getParentId() == parentId) {
+            if (Objects.equals(t.getParentId(), parentId)) {
                 recursionFn(list, t);
                 returnList.add(t);
             }

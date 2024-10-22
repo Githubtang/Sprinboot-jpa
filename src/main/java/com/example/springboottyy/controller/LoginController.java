@@ -2,7 +2,9 @@ package com.example.springboottyy.controller;
 
 import com.example.springboottyy.dto.request.LoginRequest;
 import com.example.springboottyy.model.LoginUser;
+import com.example.springboottyy.model.SysMenu;
 import com.example.springboottyy.model.SysUser;
+import com.example.springboottyy.model.vo.RouterVo;
 import com.example.springboottyy.service.*;
 import com.example.springboottyy.utils.ApiResponse;
 import com.example.springboottyy.utils.SecurityUtils;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -74,7 +77,8 @@ public class LoginController {
     @PostMapping("/getRouters")
     public ResponseEntity<ApiResponse<?>> getRouters() {
         Long userId = SecurityUtils.getUserId();
-        ApiResponse<Set<String>> menus = menuService.selectMenuPermsByUserId(userId);
-        return ResponseEntity.ok(menus);
+        ApiResponse<List<SysMenu>> menus = menuService.selectMenuTreeByUserId(userId);
+        List<RouterVo> voList = menuService.buildMenus(menus.getData());
+        return ResponseEntity.ok(ApiResponse.success("查询成功",voList));
     }
 }
