@@ -1,4 +1,4 @@
-package com.example.springboottyy.model;
+package com.example.springboottyy.model.vo;
 
 import lombok.Data;
 import okhttp3.Headers;

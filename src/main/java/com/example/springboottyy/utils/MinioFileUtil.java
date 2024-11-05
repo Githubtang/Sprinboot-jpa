@@ -2,12 +2,13 @@ package com.example.springboottyy.utils;
 
 import com.example.springboottyy.config.MinioConfig;
 import com.example.springboottyy.model.MinioBucket;
-import com.example.springboottyy.model.MinioFileVO;
+import com.example.springboottyy.model.vo.MinioFileVO;
+import com.example.springboottyy.model.vo.MinioFilesVo;
 import io.minio.GetObjectArgs;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
+import java.util.List;
 
 /**
  * @Author: Insight
@@ -30,14 +31,20 @@ public class MinioFileUtil {
     }
 
     public String uploadFile(String client, String fileName, MultipartFile file) throws Exception {
+        // 上传文件
         this.minioConfig.getBucket(client).put(fileName, file);
+        // 返回地址
         return getUrl(client, fileName);
     }
 
+    /* 返回文件路径 */
     public String getUrl(String client, String fileName) {
-        StringBuilder url = new StringBuilder();
-        url.append(minioConfig.getPrefix()).append("/").append(client).append("?").append("fileName=").append(fileName);
-        return url.toString();
+        return minioConfig.getPrefix() + "/" + client + "?" + "fileName=" + fileName;
+    }
+
+    public List<MinioFilesVo> getList(String client) throws Exception {
+        MinioBucket bucket = minioConfig.getBucket(client);
+        return bucket.list();
     }
 
     public MinioFileVO downloadFile(String client, String filePath) throws Exception {
