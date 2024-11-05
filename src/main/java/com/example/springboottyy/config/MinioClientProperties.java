@@ -2,12 +2,10 @@ package com.example.springboottyy.config;
 
 import io.minio.MinioClient;
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: minio客户端配置
  * @Date: 2024/10/27 15:30
  * @Version: 1.0
  */

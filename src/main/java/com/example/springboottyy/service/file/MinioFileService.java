@@ -1,14 +1,21 @@
 package com.example.springboottyy.service.file;
 
 import com.example.springboottyy.config.MinioConfig;
-import com.example.springboottyy.model.MinioBucket;
-import com.example.springboottyy.model.MinioFileVO;
+import com.example.springboottyy.model.vo.MinioFileVO;
+import com.example.springboottyy.model.SysFile;
+import com.example.springboottyy.model.vo.MinioFilesVo;
+import com.example.springboottyy.repository.SysFileRepository;
 import com.example.springboottyy.utils.MinioFileUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.springboottyy.utils.SecurityUtils;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * @Author: Insight
@@ -18,12 +25,15 @@ import java.io.InputStream;
  */
 @Service
 public class MinioFileService implements FileService {
+    private static final Logger log = LoggerFactory.getLogger(MinioFileService.class);
     private final MinioFileUtil minioFileUtil;
     private final MinioConfig minioConfig;
+    private final SysFileRepository fileRepository;
 
-    public MinioFileService(MinioConfig minioConfig, MinioFileUtil minioFileUtil) {
+    public MinioFileService(MinioConfig minioConfig, MinioFileUtil minioFileUtil, SysFileRepository fileRepository) {
         this.minioFileUtil = minioFileUtil;
         this.minioConfig = minioConfig;
+        this.fileRepository = fileRepository;
     }
 
     @Override
@@ -43,7 +53,7 @@ public class MinioFileService implements FileService {
 
     @Override
     public String upload(String baseDir, String fileName, MultipartFile file) throws Exception {
-        return minioFileUtil.uploadFile(minioConfig.getPrimary(), baseDir + "/" + fileName, file);
+        return minioFileUtil.uploadFile(minioConfig.getPrimary(), baseDir + File.separator + fileName, file);
     }
 
     @Override
@@ -53,7 +63,7 @@ public class MinioFileService implements FileService {
     }
 
     @Override
-    public boolean deleteFile(String filePath) throws Exception {
+    public boolean deleteFile(String filePath) {
         try {
             minioFileUtil.removeFile(minioConfig.getPrimary(), filePath);
             return true;
@@ -62,6 +72,28 @@ public class MinioFileService implements FileService {
         }
     }
 
+    /* 文件列表 */
+    public List<MinioFilesVo> getListFile() throws Exception {
+        return minioFileUtil.getList(minioConfig.getPrimary());
+    }
+
+    public MinioFileVO getFile(String filePath) throws Exception {
+        return minioFileUtil.downloadFile(minioConfig.getPrimary(), filePath);
+    }
+
+    @Transactional
+    public String uploadAndSaveFile(MultipartFile file) throws Exception {
+        String uri = upload(file);
+        SysFile sysFile = new SysFile();
+        sysFile.setFileName(file.getOriginalFilename());
+        sysFile.setFileType(file.getContentType());
+        sysFile.setFilePath(uri);
+        sysFile.setFileSize(file.getSize());
+        sysFile.setSysUser(SecurityUtils.getLoginUser().getUser());
+        sysFile.setBucketName(minioConfig.getMasterBucket().getBucketName());
+        fileRepository.save(sysFile);
+        return uri;
+    }
 }
 
 

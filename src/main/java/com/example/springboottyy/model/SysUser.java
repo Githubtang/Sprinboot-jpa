@@ -1,5 +1,7 @@
 package com.example.springboottyy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,8 +20,6 @@ import java.util.Set;
 @Data
 @Entity
 public class SysUser {
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -79,4 +79,7 @@ public class SysUser {
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     private Set<SysPost> posts;
 
+    // 用户文件
+    @OneToMany(mappedBy = "sysUser",fetch = FetchType.LAZY)
+    private Set<SysFile> files;
 }

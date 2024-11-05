@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: minio配置类
  * @Date: 2024/10/24 11:23
  * @Version: 1.0
  */
@@ -33,7 +33,7 @@ public class MinioConfig implements InitializingBean {
 
     private static final Logger log = LoggerFactory.getLogger(MinioConfig.class);
     private Map<String, MinioClientProperties> client = new HashMap<>();
-    private String prefix = "/minio";
+    private String prefix = "/api/file";
     private String primary;
     private Map<String, MinioBucket> targetMinioBucket = new HashMap<>();
     private MinioBucket masterBucket;
