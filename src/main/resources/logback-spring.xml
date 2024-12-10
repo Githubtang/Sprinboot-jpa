@@ -1,0 +1,37 @@
+<configuration>
+    <!-- 定义日志级别、格式 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+     Logstash TCP Appender
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!-- Logstash 的 IP 地址和端口 -->
+        <destination>192.168.178.130:5000</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <!-- Kafka Appender -->
+    <appender name="KAFKA" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <topic>log-topic</topic>
+        <!-- 配置 Kafka Producer -->
+<!--        <producerConfig>bootstrap.servers=192.168.178.130:9092</producerConfig>-->
+        <producerConfig>bootstrap.servers=192.168.178.130:9094</producerConfig>
+        <producerConfig>
+            <property name="key.serializer" value="org.apache.kafka.common.serialization.StringSerializer"/>
+            <property name="value.serializer" value="org.apache.kafka.common.serialization.StringSerializer"/>
+        </producerConfig>
+        <!-- 可选：定义一个序列化格式 -->
+        <!-- 如果你使用 JSON 格式，你可以使用 LogstashEncoder -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <!-- 定义日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+<!--        <appender-ref ref="LOGSTASH" />-->
+        <appender-ref ref="KAFKA"/>
+    </root>
+</configuration>

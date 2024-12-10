@@ -40,13 +40,7 @@ public class LoginController {
     private LoginService loginService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private MenuService menuService;
-
-    @Autowired
-    private RoleService roleService;
 
     @Operation(summary = "登录")
     @PostMapping("/login")

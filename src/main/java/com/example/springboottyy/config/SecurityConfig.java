@@ -48,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login","/register").permitAll() // 允许所有人访问 "/public/**" 路径
+                        .requestMatchers("/login","/register","/logs/").permitAll() // 允许所有人访问 "/public/**" 路径
 //                        .requestMatchers("/api/role/**", "/api/menu/**").hasRole("admin")
                         .requestMatchers(HttpMethod.GET, "/", "/**.html", "/**.css", "/**.js","/**.ico",
                                 "/profile/**").permitAll()
