@@ -5,6 +5,7 @@ import com.example.springboottyy.service.LogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +37,16 @@ public class LogController {
 
     @GetMapping("/time")
     public List<SysLog> getLogsByTimeRange(@RequestParam String beginTime, @RequestParam String endTime) {
-        return logService.searchByTimeRange(beginTime, endTime);
+//        return logService.searchByTimeRange(beginTime, endTime);
+        return null;
+    }
+
+    @GetMapping("/by-date")
+    public List<SysLog> getLogsByDate(
+            @RequestParam("beginTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String beginTime,
+            @RequestParam("endTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String endTime
+    ) {
+        return logService.getLogsTimestampRange(beginTime, endTime);
     }
 
 }

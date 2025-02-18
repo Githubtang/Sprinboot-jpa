@@ -17,7 +17,6 @@
     <appender name="KAFKA" class="com.github.danielwegener.logback.kafka.KafkaAppender">
         <topic>log-topic</topic>
         <!-- 配置 Kafka Producer -->
-<!--        <producerConfig>bootstrap.servers=192.168.178.130:9092</producerConfig>-->
         <producerConfig>bootstrap.servers=192.168.178.130:9094</producerConfig>
         <producerConfig>
             <property name="key.serializer" value="org.apache.kafka.common.serialization.StringSerializer"/>
