@@ -4,6 +4,7 @@ import com.example.springboottyy.model.SysDept;
 import com.example.springboottyy.repository.SysDeptRepository;
 import com.example.springboottyy.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -19,10 +20,11 @@ import java.util.Optional;
  * @Version: 1.0
  */
 @Service
-public class DeptService {
+public class DeptService{
     @Autowired
     private SysDeptRepository deptRepository;
 
+    @Cacheable(value = "deptCache")
     public ApiResponse<?> findAll() {
         List<SysDept> all = deptRepository.findAll();
         if (all.isEmpty()) {

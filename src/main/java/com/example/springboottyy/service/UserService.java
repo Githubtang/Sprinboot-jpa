@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,6 +66,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
+    @Cacheable(value = "userCache")
     public ApiResponse<?> findAll() {
         List<SysUser> users = userRepository.findAll();
         if (users.isEmpty()) {

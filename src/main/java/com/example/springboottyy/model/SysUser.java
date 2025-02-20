@@ -1,12 +1,11 @@
 package com.example.springboottyy.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ import java.util.Set;
 @Schema(description = "用户")
 @Data
 @Entity
-public class SysUser {
+public class SysUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,8 +45,9 @@ public class SysUser {
 
     @PrePersist
     public void prePersist() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
     }
 
     @PreUpdate
@@ -80,6 +80,6 @@ public class SysUser {
     private Set<SysPost> posts;
 
     // 用户文件
-    @OneToMany(mappedBy = "sysUser",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sysUser", fetch = FetchType.LAZY)
     private Set<SysFile> files;
 }
