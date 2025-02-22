@@ -24,7 +24,7 @@ import java.time.Duration;
 public class RedisConfig implements CachingConfigurer {
 
     @Bean
-    @Primary
+    @Primary  //Primary 指定默认使用的bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = instanceConfig(3600 * 24 * 15L); //缓存30天
         return RedisCacheManager.builder(connectionFactory).cacheDefaults(config).transactionAware().build();// transactionAware支持事务操作

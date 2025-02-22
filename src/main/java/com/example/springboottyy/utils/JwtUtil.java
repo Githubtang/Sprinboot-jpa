@@ -30,10 +30,10 @@ public class JwtUtil {
     @Autowired
     private HttpServletRequest request;
 
-    private final RedisUtil redisUtil;
+    private final RedisCache redisCache;
 
-    public JwtUtil(RedisUtil redisUtil) {
-        this.redisUtil = redisUtil;
+    public JwtUtil(RedisCache redisCache) {
+        this.redisCache = redisCache;
     }
 
     /**
@@ -51,7 +51,7 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
                 .compact();
         // 将token存入redis + timeout
-        redisUtil.setToken(token, username, TOKEN_VALIDITY);
+        redisCache.setToken(token, username, TOKEN_VALIDITY);
         return token;
     }
 
@@ -84,8 +84,8 @@ public class JwtUtil {
      * @param token
      */
     public void invalidateToken(String token) {
-        if (redisUtil.hasToken(token)) {
-            redisUtil.delToken(token);
+        if (redisCache.hasToken(token)) {
+            redisCache.delToken(token);
         }
     }
 
@@ -94,7 +94,7 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, String username) {
-        if (!redisUtil.hasToken(token)) {
+        if (!redisCache.hasToken(token)) {
             return false;
         }
         final String extractedUsername = extractUsername(token);
