@@ -17,5 +17,6 @@ public final class ServiceException extends RuntimeException implements Serializ
     private String msg;
     private String detail;
     public ServiceException() {}
+    public ServiceException(String msg) {}
     public ServiceException(String msg,Integer code) {}
 }

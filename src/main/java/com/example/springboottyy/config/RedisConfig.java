@@ -51,13 +51,17 @@ public class RedisConfig implements CachingConfigurer {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
+        FastJson2JsonRedisSerializer<Object> serializer = new FastJson2JsonRedisSerializer<>(Object.class);
         // 设置key 和 hash key 的序列化器为 String
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(serializer);
 
         // 设置value 和 hash value 的序列化器为 String
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(serializer);
+
+        // 这个方法可以不调用 本来就是一个回调方法用来确保redisTemplate初始化完成
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 }

@@ -12,7 +12,7 @@ import java.nio.charset.Charset;
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: Redis使用FastJson序列化
  * @Date: 2025/2/20 17:45
  * @Version: 1.0
  */

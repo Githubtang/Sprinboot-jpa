@@ -3,13 +3,12 @@ package com.example.springboottyy.config;
 import com.example.springboottyy.model.MinioBucket;
 import io.minio.BucketExistsArgs;
 import io.minio.MinioClient;
-import io.minio.errors.*;
+import io.minio.errors.MinioException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
