@@ -49,12 +49,16 @@ public class RateLimiterAspect {
 
     @Before("@annotation(rateLimiter)")
     public void doBefore(JoinPoint joinPoint, RateLimiter rateLimiter) {
+        // 获取定义好的时间和次数
         int time = rateLimiter.time();
         int count = rateLimiter.count();
+
+        // 获取合并后的 Redis 键
         String combineKey = getCombineKey(rateLimiter, joinPoint);
         List<String> keys = Collections.singletonList(combineKey);
+
         try {
-            Long number = redisTemplate.execute(limitScript, keys, time);
+            Long number = redisTemplate.execute(limitScript, keys,String.valueOf(count) ,String.valueOf(time));
             if (StringUtils.isNull(number) || number.intValue() > count) {
                 throw new ServiceException("访问过于频繁,请稍后再试");
             }
@@ -67,13 +71,20 @@ public class RateLimiterAspect {
     }
 
     public String getCombineKey(RateLimiter rateLimiter, JoinPoint joinPoint) {
+        // 从rateLimiter注解中获取 key
         StringBuffer stringBuffer = new StringBuffer(rateLimiter.key());
+
+        // 如果限流类型基于IP,拼接客户端IP地址
         if (rateLimiter.limitType().equals(LimitType.IP)) {
             stringBuffer.append(IpUtils.getIpAddr()).append("-");
         }
+
+        // 获取被调用方法的签名信息
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Class<?> targetClass = method.getDeclaringClass();
+
+        // 拼接方法所在类的名称和方法名，确保每个方法的限流是独立的
         stringBuffer.append(targetClass.getName()).append("-").append(method.getName());
         return stringBuffer.toString();
     }

@@ -1,5 +1,7 @@
 package com.example.springboottyy.controller;
 
+import com.example.springboottyy.annotation.RateLimiter;
+import com.example.springboottyy.enums.LimitType;
 import com.example.springboottyy.utils.ApiResponse;
 import com.example.springboottyy.utils.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +33,7 @@ public class RedisCacheController {
 
     @Operation(summary = "获取角色权限")
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
+    @RateLimiter( count = 10, limitType = LimitType.IP)
     @RequestMapping()
     public ResponseEntity<ApiResponse<?>> getInfo() {
         HashMap<String, Object> result = new HashMap<>();
