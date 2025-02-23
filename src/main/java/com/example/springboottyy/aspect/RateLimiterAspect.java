@@ -31,9 +31,10 @@ import java.util.List;
 public class RateLimiterAspect {
 
     private static final Logger log = LoggerFactory.getLogger(RateLimiterAspect.class);
+
     private RedisTemplate<String, Object> redisTemplate;
 
-    private RedisScript<Long> redisScript;
+    private RedisScript<Long> limitScript;
 
     @Autowired
     public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
@@ -41,9 +42,10 @@ public class RateLimiterAspect {
     }
 
     @Autowired
-    public void setRedisScript(RedisScript<Long> redisScript) {
-        this.redisScript = redisScript;
+    public void setLimitScript(RedisScript<Long> limitScript) {
+        this.limitScript = limitScript;
     }
+
 
     @Before("@annotation(rateLimiter)")
     public void doBefore(JoinPoint joinPoint, RateLimiter rateLimiter) {
@@ -52,16 +54,14 @@ public class RateLimiterAspect {
         String combineKey = getCombineKey(rateLimiter, joinPoint);
         List<String> keys = Collections.singletonList(combineKey);
         try {
-            Long number = redisTemplate.execute(redisScript, keys, time);
-            if (StringUtils.isNull(number) != number.intValue() > count) {
+            Long number = redisTemplate.execute(limitScript, keys, time);
+            if (StringUtils.isNull(number) || number.intValue() > count) {
                 throw new ServiceException("访问过于频繁,请稍后再试");
             }
-            log.info("限制请求'{}',当前请求'{}',缓存key'{}'",count,number,combineKey);
-        }
-        catch (ServiceException e) {
+            log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number, combineKey);
+        } catch (ServiceException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("服务器限流异常,请稍后再试");
         }
     }
