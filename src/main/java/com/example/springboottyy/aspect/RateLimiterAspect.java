@@ -32,6 +32,7 @@ public class RateLimiterAspect {
 
     private static final Logger log = LoggerFactory.getLogger(RateLimiterAspect.class);
 
+//    private RedisTemplate<String, Object> redisTemplate;
     private RedisTemplate<String, Object> redisTemplate;
 
     private RedisScript<Long> limitScript;
@@ -58,15 +59,17 @@ public class RateLimiterAspect {
         List<String> keys = Collections.singletonList(combineKey);
 
         try {
-            Long number = redisTemplate.execute(limitScript, keys,String.valueOf(count) ,String.valueOf(time));
+            Long number = redisTemplate.execute(limitScript, keys, count, time);
+//            Long number = redisTemplate.execute(limitScript, keys, String.valueOf(count), String.valueOf(time));
             if (StringUtils.isNull(number) || number.intValue() > count) {
                 throw new ServiceException("访问过于频繁,请稍后再试");
             }
-            log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number, combineKey);
+            log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number.intValue(), combineKey);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("服务器限流异常,请稍后再试");
+            throw e;
+//            throw new RuntimeException("服务器限流异常,请稍后再试");
         }
     }
 

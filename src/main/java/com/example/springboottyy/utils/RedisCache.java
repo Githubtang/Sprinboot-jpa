@@ -17,6 +17,8 @@ public class RedisCache {
 
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+//    @Autowired
+//    private RedisTemplate<Object,Object> redisTemplate;
 
     // 保存token 过期时间
     public void setToken(String token, String username, long timeout) {
