@@ -1,46 +1,81 @@
 package com.example.springboottyy.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: Insight
- * @Description: 这个类暂时不加入项目 jpa数据库设计
- * @Date: 2025/2/20 16:16
+ * @Description: TODO
+ * @Date: 2025/2/27 0:15
  * @Version: 1.0
  */
-@Schema(description = "基类") // api文档描述
 @Data
-@MappedSuperclass // 表明这是一个基础类，不会单独生成表
+@Schema(title = "基类")
 public class BaseEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //主键生成策略
-    private Long id;
+    /**
+     * 搜索值
+     */
+    @Schema(title = "搜索值")
+    @JsonIgnore
+    private String searchValue;
 
-    @Schema(description = "创建者")
+    /**
+     * 创建者
+     */
+    @Schema(title = "创建者")
     private String createBy;
 
-    @Schema(description = "创建时间")
-    private LocalDateTime createdAt;
+    /**
+     * 创建时间
+     */
+    @Schema(title = "创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
-    @Schema(description = "修改时间")
-    private LocalDateTime updatedAt;
+    /**
+     * 更新者
+     */
+    @Schema(title = "更新者")
+    private String updateBy;
 
-    @PrePersist  // 创建对象时会回调
-    protected void prePersist() {
-        LocalDateTime now = LocalDateTime.now();
-        this.createdAt = now;
-        this.updatedAt = now;
-    }
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 
-    @PreUpdate  // 修改对象时会回调
-    protected void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    /**
+     * 备注
+     */
+    @Getter
+    @Schema(title = "备注")
+    private String remark;
+
+    /**
+     * 请求参数
+     */
+    @Schema(title = "请求参数")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Map<String, Object> params;
+
+    public Map<String, Object> getParams() {
+        if (params == null) {
+            params = new HashMap<>();
+        }
+        return params;
     }
 
 }
+
