@@ -85,6 +85,13 @@ public class DeptController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "修改部门")
+    @PreAuthorize("@ss.hasPermi('system:menu:edit')")
+    @PostMapping("/updateDept")
+    public ResponseEntity<ApiResponse<?>> updateDept(@RequestBody SysDept dept) {
+        ApiResponse<?> response = deptService.updateDept(dept);
+        return ResponseEntity.ok(response);
+    }
     /**
      * 部门新增岗位
      * TODO 部门新增岗位
