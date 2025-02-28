@@ -64,5 +64,8 @@ public class SysRole implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private Set<SysMenu> menus;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "role_dept",joinColumns = @JoinColumn(name = "role_id"),inverseJoinColumns = @JoinColumn(name = "dept_id"))
+    private Set<SysDept> depts;
 
 }

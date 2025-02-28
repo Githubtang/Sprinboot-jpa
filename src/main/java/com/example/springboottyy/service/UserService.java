@@ -214,7 +214,7 @@ public class UserService {
         if (optionalUser.isPresent() && optionalDept.isPresent()) {
             SysUser user = optionalUser.get();
             SysDept dept = optionalDept.get();
-            user.setDept(dept);
+            user.setId(dept.getId());
             userRepository.save(user);
             return ApiResponse.success("加入部门成功", user);
         }

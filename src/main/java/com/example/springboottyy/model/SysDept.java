@@ -68,8 +68,4 @@ public class SysDept implements Serializable {
         updatedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "dept", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<SysUser> users;
-
 }

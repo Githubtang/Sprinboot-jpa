@@ -23,6 +23,11 @@ public class SysUser extends BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** 部门ID */
+    @Schema(title = "部门编号")
+    @NotNull(message = "部门编号不能为空")
+    private Long deptId;
+
     @Schema(description = "用户名")
     @NotNull(message = "用户名不能为空")
     private String username;
@@ -64,11 +69,6 @@ public class SysUser extends BaseEntity implements Serializable {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<SysRole> roles;
 
-    // 用户部门
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "dept_id")
-    private SysDept dept;
-
     // 用户岗位
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_post", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
@@ -78,9 +78,6 @@ public class SysUser extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "sysUser", fetch = FetchType.LAZY)
     private Set<SysFile> files;
 
-    public Long getDeptId() {
-        return this.dept != null ? this.dept.getId() : null;
-    }
 
     public Long getRoleId() {
         return this.roles != null && !this.roles.isEmpty()
