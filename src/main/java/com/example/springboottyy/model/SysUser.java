@@ -18,7 +18,7 @@ import java.util.Set;
 @Schema(description = "用户")
 @Data
 @Entity
-public class SysUser implements Serializable {
+public class SysUser extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,30 +56,35 @@ public class SysUser implements Serializable {
     }
 
     public boolean isAdmin() {
-        return this.getRoles().stream().anyMatch(sysRole ->
-                sysRole.getRoleKey().contains("admin"));
+        return this.getRoles().stream().anyMatch(sysRole -> sysRole.getRoleKey().contains("admin"));
     }
 
     // 用户角色
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<SysRole> roles;
 
     // 用户部门
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dept_id")
     private SysDept dept;
 
     // 用户岗位
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_post",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
+    @JoinTable(name = "user_post", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
     private Set<SysPost> posts;
 
     // 用户文件
     @OneToMany(mappedBy = "sysUser", fetch = FetchType.LAZY)
     private Set<SysFile> files;
+
+    public Long getDeptId() {
+        return this.dept != null ? this.dept.getId() : null;
+    }
+
+    public Long getRoleId() {
+        return this.roles != null && !this.roles.isEmpty()
+                ? this.roles.iterator().next().getId()
+                : null;
+    }
 }

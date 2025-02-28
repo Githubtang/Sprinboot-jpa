@@ -32,7 +32,6 @@ public class RateLimiterAspect {
 
     private static final Logger log = LoggerFactory.getLogger(RateLimiterAspect.class);
 
-//    private RedisTemplate<String, Object> redisTemplate;
     private RedisTemplate<String, Object> redisTemplate;
 
     private RedisScript<Long> limitScript;

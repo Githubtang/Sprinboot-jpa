@@ -31,7 +31,7 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @Operation(description = "部门列表")
+    @Operation(summary = "部门列表")
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllDept() {
@@ -47,7 +47,7 @@ public class DeptController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(description = "新建部门")
+    @Operation(summary = "新建部门")
     @PreAuthorize("@ss.hasPermi('system:menu:add')")
     @PostMapping("/createDept")
     public ResponseEntity<ApiResponse<?>> createDepartment(@RequestBody SysDept dept) {
@@ -55,7 +55,7 @@ public class DeptController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(description = "删除部门")
+    @Operation(summary = "删除部门")
     @PreAuthorize("@ss.hasPermi('system:menu:remove')")
     @PostMapping("/deleteDept")
     public ResponseEntity<ApiResponse<?>> deleteDept(@RequestBody List<Long> deptIds) {
@@ -66,7 +66,7 @@ public class DeptController {
     /**
      * 关闭部门
      */
-    @Operation(description = "关闭部门")
+    @Operation(summary = "关闭部门")
     @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @PostMapping("/enabledDept")
     public ResponseEntity<ApiResponse<?>> enabledDept(@RequestBody List<Long> deptIds) {
@@ -77,7 +77,7 @@ public class DeptController {
     /**
      * 开启部门
      */
-    @Operation(description = "开启部门")
+    @Operation(summary = "开启部门")
     @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @PostMapping("/unEnableDept")
     public ResponseEntity<ApiResponse<?>> unEnableDept(@RequestBody List<Long> deptIds) {

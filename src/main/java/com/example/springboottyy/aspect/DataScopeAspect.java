@@ -10,6 +10,8 @@ import com.example.springboottyy.utils.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -49,43 +51,36 @@ public class DataScopeAspect {
      * 数据权限过滤关键字
      */
     public static final String DATA_SCOPE = "dataScope";
+    private static final Logger log = LoggerFactory.getLogger(DataScopeAspect.class);
 
-    @Before("@annotation(controllerDataScope)")
-    public void doBefore(final JoinPoint point, DataScope controllerDataScope) throws Throwable {
-        clearDataScope(point);
-        handleDataScope(point,controllerDataScope);
 
+    @Before("@annotation(DataScope)")
+    public void doBefore(JoinPoint joinPoint, DataScope controllerDataScope) {
+        clearDataScope(joinPoint);
+        handleDataScope(joinPoint, controllerDataScope);
     }
 
-    public void handleDataScope(final JoinPoint point, DataScope controllerDataScope) {
+    private void handleDataScope(JoinPoint joinPoint, DataScope controllerDataScope) {
+        // 获取登录用户
         LoginUser loginUser = SecurityUtils.getLoginUser();
         if (StringUtils.isNotNull(loginUser)) {
             SysUser currentUser = loginUser.getUser();
-            // 如果是管理员就就不过滤数据
             if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin()) {
-                String permission = StringUtils.defaultIfEmpty(controllerDataScope.permission(),
-                        PermissionContextHolder.getContext());
-                dataScopeFilter(point, currentUser, controllerDataScope.deptAlias(),
-                        controllerDataScope.userAlias(), permission);
+                String permission = StringUtils.defaultIfEmpty(controllerDataScope.permission(), PermissionContextHolder.getContext());
+                dataScopeFilter(joinPoint,currentUser,controllerDataScope.deptAlias(),controllerDataScope.userAlias(),permission);
             }
-
         }
     }
 
-    public void dataScopeFilter(JoinPoint point, SysUser currentUser, String s, String s1, String permission) {
-
+    private void dataScopeFilter(JoinPoint joinPoint, SysUser currentUser, String s, String s1, String permission) {
     }
 
-    public void clearDataScope(final JoinPoint joinPoint) {
-        Object params = joinPoint.getArgs()[0];
-        if (StringUtils.isNotNull(params) && params instanceof BaseEntity) {
-            BaseEntity baseEntity = (BaseEntity) params;
-            baseEntity.getParams().put(DATA_SCOPE,"");
+    private void clearDataScope(final JoinPoint joinPoint) {
+        Object[] params = joinPoint.getArgs();
+        if (StringUtils.isNotNull(params) && params[0] instanceof BaseEntity) {
+            BaseEntity entity = (BaseEntity) params[0];
+            entity.getParams().put(DATA_SCOPE, "");
         }
-
-
     }
-
-
 
 }

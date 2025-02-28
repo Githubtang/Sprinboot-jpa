@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: 登录用户信息
  * @Date: 2024/10/16 8:17
  * @Version: 1.0
  */
@@ -28,7 +28,8 @@ public class LoginUser implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public LoginUser(Long id, Long deptId, SysUser user,Set<String> permissions, Collection<? extends GrantedAuthority> authorities) {
+    public LoginUser(Long id, Long deptId, SysUser user, Set<String> permissions,
+            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.deptId = deptId;
         this.user = user;
@@ -56,4 +57,13 @@ public class LoginUser implements UserDetails {
         return user.isEnabled();
     }
 
+    @Override
+    public String toString() {
+        return "LoginUser{" +
+                "id=" + id +
+                ", deptId=" + deptId +
+                ", username='" + username + '\'' +
+                ", permissions=" + permissions +
+                '}';
+    }
 }

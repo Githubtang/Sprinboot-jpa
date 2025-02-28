@@ -1,25 +1,20 @@
 package com.example.springboottyy.service;
 
+import com.example.springboottyy.annotation.DataScope;
+import com.example.springboottyy.aspect.DataScopeAspect;
 import com.example.springboottyy.dto.UserDto;
 import com.example.springboottyy.dto.mapper.UserMapper;
-import com.example.springboottyy.model.SysDept;
-import com.example.springboottyy.model.SysPost;
-import com.example.springboottyy.model.SysRole;
-import com.example.springboottyy.model.SysUser;
+import com.example.springboottyy.model.*;
 import com.example.springboottyy.repository.SysDeptRepository;
 import com.example.springboottyy.repository.SysPostRepository;
 import com.example.springboottyy.repository.SysRoleRepository;
 import com.example.springboottyy.repository.SysUserRepository;
 import com.example.springboottyy.utils.ApiResponse;
 import com.example.springboottyy.utils.JwtUtil;
-import jakarta.annotation.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.annotation.AccessType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,25 +51,55 @@ public class UserService {
     @Autowired
     private SysPostRepository postRepository;
 
-    @Resource
-    private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // @Transactional
+    // @DataScope(deptAlias = "d",userAlias = "u") //数据权限
+    // public ApiResponse<?> findAll() {
+    // List<SysUser> users = userRepository.findAll();
+    // if (users.isEmpty()) {
+    // return ApiResponse.error("No users found");
+    // }
+    // List<UserDto> dos = users.stream().map(userMapper::toDto)
+    // .collect(Collectors.toList());
+    // return ApiResponse.success("Users found", dos);
+    // }
+
     @Transactional
-    @Cacheable(value = "userCache")
+    @DataScope(deptAlias = "d", userAlias = "u") // 数据权限
     public ApiResponse<?> findAll() {
-        List<SysUser> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            return ApiResponse.error("No users found");
+        try {
+            // 创建基础查询对象
+            BaseEntity baseEntity = new BaseEntity();
+
+            // 获取数据权限的SQL条件（这个会被DataScopeAspect自动注入）
+            String dataScope = (String) baseEntity.getParams().get(DataScopeAspect.DATA_SCOPE);
+            if (dataScope == null) {
+                dataScope = ""; // 如果没有数据权限条件，使用空字符串
+            }
+
+            log.info("数据权限条件: {}", dataScope);
+
+            // 使用带数据权限的查询方法
+            List<SysUser> users = userRepository.findAllWithDataScope(dataScope);
+
+            if (users == null || users.isEmpty()) {
+                return ApiResponse.error("No users found");
+            }
+
+            List<UserDto> dos = users.stream()
+                    .map(userMapper::toDto)
+                    .collect(Collectors.toList());
+
+            return ApiResponse.success("Users found", dos);
+        } catch (Exception e) {
+            log.error("查询用户列表出错", e);
+            return ApiResponse.error("查询用户列表失败: " + e.getMessage());
         }
-        List<UserDto> dos = users.stream().map(userMapper::toDto)
-                .collect(Collectors.toList());
-        return ApiResponse.success("Users found", dos);
     }
 
     public ApiResponse<?> getUserById(Long id) {
@@ -97,36 +122,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-//    public ApiResponse<?> login(String username, String password) {
-//        // 登录前校验
-//        loginPreCheck(username, password);
-//        Authentication authenticate = null;
-//        try {
-//            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-//            AuthenticationContextHolder.setContext(authenticationToken);
-//            // 该方法会去调用CustomUserDetailsService.loadUserByUsername
-//            authenticate = authenticationManager.authenticate(authenticationToken);
-//            // 生成 token
-//            UserDetails user = (UserDetails) authenticate.getPrincipal();
-//            String token = jwtUtil.generateToken(user.getUsername());
-//            return ApiResponse.success("success", token);
-//        } catch (BadCredentialsException e) {
-//            return ApiResponse.error("Invalid username or password", null);
-//        } catch (Exception e) {
-//            return ApiResponse.error(e.getMessage(), e);
-//        } finally {
-//            AuthenticationContextHolder.clearContext();
-//        }
-//    }
-//
-//    /*登录前校验*/
-//    public void loginPreCheck(String username, String password) {
-//        // username or password is null
-//        if (!StringUtils.hasLength(username) || !StringUtils.hasLength(password)) {
-//            throw new BadCredentialsException("Invalid username or password");
-//        }
-//    }
-
     /* 删除用户 */
     @Transactional
     public ApiResponse<Boolean> softDeleteUser(Long id) {
@@ -141,7 +136,7 @@ public class UserService {
         return ApiResponse.success("user deleted", true);
     }
 
-    /*开启所有用户*/
+    /* 开启所有用户 */
     public ApiResponse<ArrayList<SysUser>> upUser() {
         ArrayList<SysUser> users = new ArrayList<>();
         userRepository.findAll().forEach(user -> {
@@ -166,7 +161,7 @@ public class UserService {
         return ApiResponse.success("user down", users);
     }
 
-    /*用户新增角色*/
+    /* 用户新增角色 */
     @Transactional
     public ApiResponse<?> addUserRole(Long userId, Long roleId) {
         Optional<SysUser> optionalUser = userRepository.findById(userId);
@@ -181,7 +176,7 @@ public class UserService {
         return new ApiResponse<>("filed", "useraddrole filed", null);
     }
 
-    /*用户查询角色*/
+    /* 用户查询角色 */
     @Transactional
     public ApiResponse<Set<SysRole>> findRolesByUserId(Long userId) {
         Optional<SysUser> user = userRepository.findById(userId);
@@ -190,10 +185,11 @@ public class UserService {
         }
         SysUser sysUser = user.get();
         Set<SysRole> roles = sysUser.getRoles();
-        return ApiResponse.success("查询成功",roles);
+        return ApiResponse.success("查询成功", roles);
 
     }
-    /*用户新增岗位*/
+
+    /* 用户新增岗位 */
     @Transactional
     public ApiResponse<?> addUserPost(Long userId, List<Long> postIds) {
         Optional<SysUser> optionalUser = userRepository.findById(userId);
@@ -210,7 +206,7 @@ public class UserService {
         return ApiResponse.error("加入岗位失败");
     }
 
-    /*用户新增部门*/
+    /* 用户新增部门 */
     @Transactional
     public ApiResponse<SysUser> addUserDept(Long userId, Long deptId) {
         Optional<SysUser> optionalUser = userRepository.findById(userId);

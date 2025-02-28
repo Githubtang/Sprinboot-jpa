@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @Author: Insight
@@ -39,6 +37,66 @@ public class DeptService{
             return ApiResponse.success("find dept by id", dept.get());
         }
         return ApiResponse.error("查询部门失败", null);
+    }
+
+    /**
+     * 树形结构的部门列表
+     */
+    public List<SysDept> buildDeptTree() {
+        List<SysDept> deptList  = deptRepository.findAll();
+        return buildTree(deptList);
+    }
+
+    /**
+     * 递归构建树形结构
+     */
+    public List<SysDept> buildTree(List<SysDept> deptList) {
+        List<SysDept> tree = new ArrayList<>();
+        Map<Long, SysDept> deptMap = new HashMap<>();
+        for (SysDept dept : deptList) {
+            deptMap.put(dept.getId(), dept);
+        }
+        for (SysDept dept : deptList) {
+            Long parentId = dept.getParentId();
+            if (parentId == null || parentId <= 0) {
+                tree.add(dept);
+                continue;
+            }
+            SysDept parent = deptMap.get(parentId);
+            if (!ObjectUtils.isEmpty(parent)) {
+                parent.getChildren().add(dept);
+            }
+        }
+        return tree;
+    }
+
+    /**
+     * 获取一个部门部门树
+     */
+    public SysDept getDeptById(Long id) {
+        Optional<SysDept> dept = deptRepository.findById(id);
+        if (!dept.isPresent()) {
+            return null;
+        }
+        SysDept sysDept = dept.get();
+        List<SysDept> all = deptRepository.findAll();
+        List<SysDept> childrenDeptById = findChildrenDeptById(sysDept.getId(),all);
+        sysDept.setChildren(childrenDeptById);
+        return sysDept;
+    }
+
+    /**
+     * 查询部门的子部门
+     */
+    public List<SysDept> findChildrenDeptById(Long deptId,List<SysDept> all) {
+        List<SysDept> children  = new ArrayList<>();
+        for (SysDept dept : all) {
+            if (dept.getParentId() != null && dept.getParentId().equals(deptId)) {
+                children.add(dept);
+                dept.setChildren(findChildrenDeptById(dept.getId(),all));
+            }
+        }
+        return children;
     }
 
     public ApiResponse<?> createDept(SysDept department) {
