@@ -43,7 +43,7 @@ public class DeptController {
     @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @PostMapping("/getDept")
     public ResponseEntity<ApiResponse<?>> getDept(@Valid @RequestBody DeptDto deptDto) {
-        ApiResponse<?> response = deptService.findDeptById(deptDto.getId());
+        ApiResponse<?> response = deptService.findDeptTreeById(deptDto.getId());
         return ResponseEntity.ok(response);
     }
 

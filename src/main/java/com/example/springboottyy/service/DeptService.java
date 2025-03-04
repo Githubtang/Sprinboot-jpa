@@ -21,6 +21,7 @@ public class DeptService{
     @Autowired
     private SysDeptRepository deptRepository;
 
+    // 查询所有部门
     public ApiResponse<?> findAll() {
         List<SysDept> all = buildDeptTree();
         if (ObjectUtils.isEmpty(all)) {
@@ -29,12 +30,22 @@ public class DeptService{
         return ApiResponse.success("all dept", all);
     }
 
-    public ApiResponse<?> findDeptById(Long id) {
-        SysDept dept = getDeptById(id);
+    // 根据id查询部门树
+    public ApiResponse<?> findDeptTreeById(Long id) {
+        SysDept dept = getDeptTreeById(id);
         if (!ObjectUtils.isEmpty(dept)) {
             return ApiResponse.success("find dept by id", dept);
         }
         return ApiResponse.error("查询部门失败", null);
+    }
+
+    // 根据id查询部门
+    public ApiResponse<?> findDeptById(Long id) {
+        List<SysDept> byParentId = deptRepository.findByParentId(id);
+        if (!ObjectUtils.isEmpty(byParentId)) {
+            return ApiResponse.success("find dept by id", byParentId);
+        }
+        return ApiResponse.error("查询失败");
     }
 
     /**
@@ -71,7 +82,7 @@ public class DeptService{
     /**
      * 获取一个部门部门树
      */
-    public SysDept getDeptById(Long id) {
+    public SysDept getDeptTreeById(Long id) {
         Optional<SysDept> dept = deptRepository.findById(id);
         if (!dept.isPresent()) {
             return null;

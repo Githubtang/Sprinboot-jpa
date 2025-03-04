@@ -55,9 +55,10 @@ public class DataScopeAspect {
      * 数据权限过滤关键字
      */
     public static final String DATA_SCOPE = "dataScope";
+
     private static final Logger log = LoggerFactory.getLogger(DataScopeAspect.class);
 
-    @Before("@annotation(dataScope)")
+    @Before("@annotation(controllerDataScope)")
     public void doBefore(JoinPoint joinPoint, DataScope controllerDataScope) {
         clearDataScope(joinPoint);
         handleDataScope(joinPoint, controllerDataScope);
@@ -98,7 +99,6 @@ public class DataScopeAspect {
                                                 cb.equal(subRoot.get("id"), root.get("deptId")),
                                                 cb.equal(subRoot.get("id"), user.getDeptId())
                                         ))
-                                // .where(cb.equal(deptJoin.get("id"), root.get("deptId")))
                         );
                     case DATA_SCOPE_DEPT:
                         // 本部门数据权限

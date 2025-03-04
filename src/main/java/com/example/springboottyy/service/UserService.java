@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,64 +54,60 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // @Transactional
-    // @DataScope(deptAlias = "d",userAlias = "u") //数据权限
-    // public ApiResponse<?> findAll() {
-    // List<SysUser> users = userRepository.findAll();
-    // if (users.isEmpty()) {
-    // return ApiResponse.error("No users found");
-    // }
-    // List<UserDto> dos = users.stream().map(userMapper::toDto)
-    // .collect(Collectors.toList());
-    // return ApiResponse.success("Users found", dos);
-    // }
+     @Transactional
+     public ApiResponse<?> findAll() {
+         List<SysUser> users = userRepository.findAll();
+         if (users.isEmpty()) {
+         return ApiResponse.error("No users found");
+     }
+         List<UserDto> dtos = users.stream().map(user -> {
+            String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
+            return userMapper.toDto(user, deptName);
+         }).collect(Collectors.toList());
 
-    @Transactional
-    @DataScope(deptAlias = "d", userAlias = "u") // 数据权限
-    public ApiResponse<?> findAll() {
-        try {
-            // 创建基础查询对象
-            BaseEntity baseEntity = new BaseEntity();
+         return ApiResponse.success("Users found", dtos);
+     }
 
-            // 获取数据权限的SQL条件（这个会被DataScopeAspect自动注入）
-            String dataScope = (String) baseEntity.getParams().get(DataScopeAspect.DATA_SCOPE);
-            if (dataScope == null) {
-                dataScope = ""; // 如果没有数据权限条件，使用空字符串
-            }
-
-            log.info("数据权限条件: {}", dataScope);
-
-            // 使用带数据权限的查询方法
-            List<SysUser> users = userRepository.findAllWithDataScope(dataScope);
-
-            if (users == null || users.isEmpty()) {
-                return ApiResponse.error("No users found");
-            }
-
-            List<UserDto> dos = users.stream()
-                    .map(userMapper::toDto)
-                    .collect(Collectors.toList());
-
-            return ApiResponse.success("Users found", dos);
-        } catch (Exception e) {
-            log.error("查询用户列表出错", e);
-            return ApiResponse.error("查询用户列表失败: " + e.getMessage());
-        }
-    }
+//    @Transactional
+//    @DataScope(deptAlias = "d", userAlias = "u") // 数据权限
+//    public ApiResponse<?> findAll() {
+//        try {
+//            List<SysUser> users = userRepository.findAll();
+//
+//            if (users.isEmpty()) {
+//                return ApiResponse.error("No users found");
+//            }
+//            List<UserDto> dtos = users.stream().map(user -> {
+//                String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
+//                return userMapper.toDto(user, deptName);
+//            }).collect(Collectors.toList());
+//
+//            return ApiResponse.success("Users found", dtos);
+//        } catch (Exception e) {
+//            log.error("查询用户列表出错", e);
+//            return ApiResponse.error("查询用户列表失败: " + e.getMessage());
+//        }
+//    }
 
     public ApiResponse<?> getUserById(Long id) {
         Optional<SysUser> user = userRepository.findById(id);
         if (user.isEmpty()) {
             return ApiResponse.error("SysUser not found");
         }
-        UserDto dto = userMapper.toDto(user.get());
+        SysUser sysUser = user.get();
+        String deptName = Objects.requireNonNull(deptRepository.findById(sysUser.getDeptId()).orElse(null)).getDeptName();
+
+        UserDto dto = userMapper.toDto(user.get(),deptName);
         return ApiResponse.success("Users found", dto);
     }
 
     public ApiResponse<?> createUser(@NotNull SysUser user) {
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
-        UserDto dto = userMapper.toDto(userRepository.save(user));
+
+        String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
+
+        UserDto dto = userMapper.toDto(userRepository.save(user),deptName);
         return ApiResponse.success("SysUser created", dto);
     }
 

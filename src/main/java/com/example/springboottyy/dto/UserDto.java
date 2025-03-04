@@ -1,5 +1,6 @@
 package com.example.springboottyy.dto;
 
+import com.example.springboottyy.model.SysDept;
 import com.example.springboottyy.model.SysRole;
 import lombok.Data;
 
@@ -26,7 +27,8 @@ public class UserDto {
 
     private Long deptId;
     private String deptName;
-
+    private SysDept dept;
+    
     private List<Long> roleIds;
     private List<SysRole> roles;
 }
