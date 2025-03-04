@@ -4,7 +4,6 @@ import com.example.springboottyy.config.MinioConfig;
 import com.example.springboottyy.model.vo.MinioFileVO;
 import com.example.springboottyy.model.SysFile;
 import com.example.springboottyy.model.vo.MinioFilesVo;
-import com.example.springboottyy.repository.SysFileRepository;
 import com.example.springboottyy.utils.MinioFileUtil;
 import com.example.springboottyy.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
@@ -28,12 +27,10 @@ public class MinioFileService implements FileService {
     private static final Logger log = LoggerFactory.getLogger(MinioFileService.class);
     private final MinioFileUtil minioFileUtil;
     private final MinioConfig minioConfig;
-    private final SysFileRepository fileRepository;
 
-    public MinioFileService(MinioConfig minioConfig, MinioFileUtil minioFileUtil, SysFileRepository fileRepository) {
+    public MinioFileService(MinioConfig minioConfig, MinioFileUtil minioFileUtil) {
         this.minioFileUtil = minioFileUtil;
         this.minioConfig = minioConfig;
-        this.fileRepository = fileRepository;
     }
 
     @Override
@@ -91,7 +88,7 @@ public class MinioFileService implements FileService {
         sysFile.setFileSize(file.getSize());
         sysFile.setSysUser(SecurityUtils.getLoginUser().getUser());
         sysFile.setBucketName(minioConfig.getMasterBucket().getBucketName());
-        fileRepository.save(sysFile);
+//        fileRepository.save(sysFile);
         return uri;
     }
 }

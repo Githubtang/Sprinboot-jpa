@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
  * @Version: 1.0
  */
 @Data
-@Entity
 public class SysFile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +39,48 @@ public class SysFile implements Serializable {
 
     @Schema(description = "修改时间")
     private LocalDateTime updatedAt;
+
+    /**
+     * 盘符路径
+     */
+    @Schema(description = "盘符路径")
+    private String dirName;
+
+    /**
+     * 盘符类型
+     */
+    @Schema(description = "盘符类型")
+    private String sysTypeName;
+
+    /**
+     * 文件类型
+     */
+    @Schema(description = "文件类型")
+    private String typeName;
+
+    /**
+     * 总大小
+     */
+    @Schema(description = "总大小")
+    private String total;
+
+    /**
+     * 剩余大小
+     */
+    @Schema(description = "剩余大小")
+    private String free;
+
+    /**
+     * 已经使用量
+     */
+    @Schema(description = "已经使用量")
+    private String used;
+
+    /**
+     * 资源的使用率
+     */
+    @Schema(description = "资源的使用率")
+    private double usage;
 
     @PrePersist
     public void prePersist() {

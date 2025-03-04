@@ -75,8 +75,8 @@ public class SysUser extends BaseEntity implements Serializable {
     private Set<SysPost> posts;
 
     // 用户文件
-    @OneToMany(mappedBy = "sysUser", fetch = FetchType.LAZY)
-    private Set<SysFile> files;
+//    @OneToMany(mappedBy = "sysUser", fetch = FetchType.LAZY)
+//    private Set<SysFile> files;
 
 
     public Long getRoleId() {
