@@ -29,11 +29,11 @@ import java.util.*;
 public class RedisCacheController {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Operation(summary = "获取角色权限")
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
-    @RateLimiter( count = 10, limitType = LimitType.IP)
+    @RateLimiter(limitType = LimitType.IP)
     @RequestMapping()
     public ResponseEntity<ApiResponse<?>> getInfo() {
         HashMap<String, Object> result = new HashMap<>();

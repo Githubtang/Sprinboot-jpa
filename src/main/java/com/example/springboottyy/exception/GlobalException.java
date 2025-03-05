@@ -17,7 +17,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: 全局异常处理
  * @Date: 2024/10/13 0:33
  * @Version: 1.0
  */

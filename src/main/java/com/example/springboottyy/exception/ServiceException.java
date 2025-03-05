@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: 服务异常
  * @Date: 2024/10/14 9:22
  * @Version: 1.0
  */
