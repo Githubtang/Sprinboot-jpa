@@ -43,6 +43,11 @@ public class CacheConstants {
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt";
 
     /**
+     * 登录ip错误次数 redis key
+     */
+    public static final String IP_ERR_CNT_KEY = "ip_err_cnt_key";
+
+    /**
      * 手机号验证码 phone codes
      */
     public static final String PHONE_CODES = "phone_codes";
@@ -51,4 +56,14 @@ public class CacheConstants {
      * 邮箱验证码
      */
     public static final String EMAIL_CODES = "email_codes";
+
+    /**
+     * 文件的md5 redis key
+     */
+    public static final String FILE_MD5_PATH_KEY = "file_md5_path";
+
+    /**
+     * 文件路径 redis key
+     */
+    public static final String FILE_PATH_MD5_KEY = "file_path_md5";
 }

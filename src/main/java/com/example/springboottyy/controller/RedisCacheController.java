@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +30,7 @@ public class RedisCacheController {
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
-    @Operation(summary = "获取角色权限")
+    @Operation(summary = "获取缓存信息")
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @RateLimiter(limitType = LimitType.IP)
     @RequestMapping()
