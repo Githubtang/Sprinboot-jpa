@@ -1,6 +1,6 @@
 package com.example.springboottyy.annotation;
 
-import com.example.springboottyy.constant.CacheConstants;
+import com.example.springboottyy.common.constant.CacheConstants;
 import com.example.springboottyy.enums.LimitType;
 
 import java.lang.annotation.*;

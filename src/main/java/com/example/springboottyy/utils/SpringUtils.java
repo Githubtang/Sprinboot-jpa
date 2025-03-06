@@ -7,6 +7,7 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: GithubTang
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationContextAware;
  * @Date: 2025/3/5 22:28
  * @Version: 1.0
  */
+@Component
 public class SpringUtils implements BeanFactoryPostProcessor, ApplicationContextAware {
     /**
      * Spring应用上下文环境
@@ -25,13 +27,11 @@ public class SpringUtils implements BeanFactoryPostProcessor, ApplicationContext
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         SpringUtils.beanFactory = beanFactory;
-
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringUtils.applicationContext = applicationContext;
-
     }
 
     /**

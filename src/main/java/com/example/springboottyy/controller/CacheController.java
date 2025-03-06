@@ -12,10 +12,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.cache.Cache;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,8 +60,8 @@ public class CacheController {
     @Parameters({
         @Parameter(name = "cacheName",description = "缓存名称",required = true)
     })
-    @PostMapping("/getKeys/{cacheName}")
-    public ApiResponse<?> getCacheKeys(@PathVariable String cacheName){
+    @PostMapping("/getKeys")
+    public ApiResponse<?> getCacheKeys(@RequestBody String cacheName){
         tmpCacheName = cacheName;
         Set<String> keys = CacheUtils.getKeys(cacheName);
         return ApiResponse.success("查询成功",keys);
@@ -76,12 +73,12 @@ public class CacheController {
             @Parameter(name = "cacheName",description = "缓存名称",required = true),
             @Parameter(name = "cacheKey",description = "缓存键名",required = true)
     })
-    @PostMapping("/getValue/{cacheName}/{cacheKey}")
-    public ApiResponse<?> getCacheValue(@PathVariable String cacheName, @PathVariable String cacheKye){
-        Cache.ValueWrapper valueWrapper = CacheUtils.get(cacheName, cacheKye);
+    @PostMapping("/getValue")
+    public ApiResponse<?> getCacheValue(@RequestParam String cacheName, @RequestParam String cacheKey){
+        Cache.ValueWrapper valueWrapper = CacheUtils.get(cacheName, cacheKey);
         SysCache sysCache = new SysCache();
         sysCache.setCacheName(cacheName);
-        sysCache.setCacheKey(cacheKye);
+        sysCache.setCacheKey(cacheKey);
         if (StringUtils.isNotNull(valueWrapper)){
             sysCache.setCacheValue(Convert.toStr(valueWrapper.get(),""));
         }
@@ -93,8 +90,8 @@ public class CacheController {
     @Parameters({
             @Parameter(name = "cacheName",description = "缓存名称",required = true)
     })
-    @PostMapping("/clearCacheName/{cacheName}")
-    public ApiResponse<?> clearCacheName(@PathVariable String cacheName){
+    @PostMapping("/clearCacheName")
+    public ApiResponse<?> clearCacheName(@RequestBody String cacheName){
         CacheUtils.clear(cacheName);
         return ApiResponse.success();
     }
@@ -104,8 +101,8 @@ public class CacheController {
     @Parameters({
             @Parameter(name = "cacheKey",description = "缓存键名",required = true)
     })
-    @PostMapping("/clearCacheKey/{cacheKey}")
-    public ApiResponse<?> clearCacheKey(@PathVariable String cacheKey){
+    @PostMapping("/clearCacheKey")
+    public ApiResponse<?> clearCacheKey(@RequestBody String cacheKey){
         CacheUtils.removeIfPresent(tmpCacheName, cacheKey);
         return ApiResponse.success();
     }

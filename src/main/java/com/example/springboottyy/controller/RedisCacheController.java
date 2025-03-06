@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class RedisCacheController {
     @Operation(summary = "获取缓存信息")
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @RateLimiter(limitType = LimitType.IP)
-    @RequestMapping()
+    @PostMapping()
     public ResponseEntity<ApiResponse<?>> getInfo() {
         HashMap<String, Object> result = new HashMap<>();
         Properties info = (Properties) redisTemplate.execute((RedisCallback<Object>) connection -> connection.commands().info());

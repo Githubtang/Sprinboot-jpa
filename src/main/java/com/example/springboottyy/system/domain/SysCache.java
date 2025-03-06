@@ -31,7 +31,7 @@ public class SysCache {
     public SysCache() {
     }
 
-    public SysCache(String remake, String cacheName) {
+    public SysCache(String cacheName,String remake ) {
         this.remake = remake;
         this.cacheName = cacheName;
     }
