@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -17,16 +18,20 @@ import java.util.Date;
 
 /**
  * @Author: Insight
- * @Description: TODO
+ * @Description: token验证处理
  * @Date: 2024/10/12 23:56
  * @Version: 1.0
  */
 @Component
+@ConfigurationProperties(prefix = "token")
 public class JwtUtil {
     private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
-    private String SECRET_KEY = "Y2M1ZTI4MDM4ZTQwNGJmYjE5MjEyZTBlZDYxNzEyMjk4MjE1MjMzYzdhN2YzZTc1OTQ2YzEy";
-    @Value("${token.expireTime}")
+//    private String SECRET_KEY = "Y2M1ZTI4MDM4ZTQwNGJmYjE5MjEyZTBlZDYxNzEyMjk4MjE1MjMzYzdhN2YzZTc1OTQ2YzEy";
+    private String SECRET_KEY;
+//    @Value("${token.expireTime}")
     private long TOKEN_VALIDITY;
+
+    private String HEADER;
     @Autowired
     private HttpServletRequest request;
 

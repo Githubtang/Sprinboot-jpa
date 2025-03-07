@@ -21,15 +21,44 @@ public class LoginUser implements UserDetails {
     private Long id;
     private Long deptId;
     private String username;
+
+    // 用户唯一标识
+    private String token;
+
+    // 登录时间
+    private Long loginTime;
+
+    // 过期时间
+    private Long expireTime;
+
+
+    // 登录IP地址
+    private String ipaddr;
+
+    // 登录地点
+    private String loginLocation;
+
+    // 浏览器类型
+    private String browser;
+
+    // 操作系统
+    private String os;
+
     // 权限列表
     private Set<String> permissions;
+
     // 用户信息
     private SysUser user;
 
     private Collection<? extends GrantedAuthority> authorities;
 
+    public LoginUser(SysUser user, Set<String> permissions) {
+        this.user = user;
+        this.permissions = permissions;
+    }
+
     public LoginUser(Long id, Long deptId, SysUser user, Set<String> permissions,
-            Collection<? extends GrantedAuthority> authorities) {
+                     Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.deptId = deptId;
         this.user = user;
