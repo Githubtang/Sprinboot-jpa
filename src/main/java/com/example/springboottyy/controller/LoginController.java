@@ -8,6 +8,7 @@ import com.example.springboottyy.service.LoginService;
 import com.example.springboottyy.service.MenuService;
 import com.example.springboottyy.service.SysPermissionService;
 import com.example.springboottyy.utils.ApiResponse;
+import com.example.springboottyy.utils.JwtUtil;
 import com.example.springboottyy.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,6 +44,9 @@ public class LoginController {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Operation(summary = "登录")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -56,6 +60,7 @@ public class LoginController {
     @Operation(summary = "获取用户信息")
     @PostMapping("/getInfo")
     public ResponseEntity<ApiResponse<?>> getInfo() {
+//        version :1.0
         SysUser user = SecurityUtils.getLoginUser().getUser();
         Set<String> roles = permissionService.getRolePermission(user);
         Set<String> permissions = permissionService.getMenuPermission(user);
