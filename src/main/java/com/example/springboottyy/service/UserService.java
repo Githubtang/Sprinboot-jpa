@@ -54,40 +54,42 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-     @Transactional
-     public ApiResponse<?> findAll() {
-         List<SysUser> users = userRepository.findAll();
-         if (users.isEmpty()) {
-         return ApiResponse.error("No users found");
-     }
-         List<UserDto> dtos = users.stream().map(user -> {
-            String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
+    @Transactional
+    public ApiResponse<?> findAll() {
+        List<SysUser> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            return ApiResponse.error("No users found");
+        }
+        List<UserDto> dtos = users.stream().map(user -> {
+            String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null))
+                    .getDeptName();
             return userMapper.toDto(user, deptName);
-         }).collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
-         return ApiResponse.success("Users found", dtos);
-     }
+        return ApiResponse.success("Users found", dtos);
+    }
 
-//    @Transactional
-//    @DataScope(deptAlias = "d", userAlias = "u") // 数据权限
-//    public ApiResponse<?> findAll() {
-//        try {
-//            List<SysUser> users = userRepository.findAll();
-//
-//            if (users.isEmpty()) {
-//                return ApiResponse.error("No users found");
-//            }
-//            List<UserDto> dtos = users.stream().map(user -> {
-//                String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
-//                return userMapper.toDto(user, deptName);
-//            }).collect(Collectors.toList());
-//
-//            return ApiResponse.success("Users found", dtos);
-//        } catch (Exception e) {
-//            log.error("查询用户列表出错", e);
-//            return ApiResponse.error("查询用户列表失败: " + e.getMessage());
-//        }
-//    }
+    // @Transactional
+    // @DataScope(deptAlias = "d", userAlias = "u") // 数据权限
+    // public ApiResponse<?> findAll() {
+    // try {
+    // List<SysUser> users = userRepository.findAll();
+    //
+    // if (users.isEmpty()) {
+    // return ApiResponse.error("No users found");
+    // }
+    // List<UserDto> dtos = users.stream().map(user -> {
+    // String deptName =
+    // Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
+    // return userMapper.toDto(user, deptName);
+    // }).collect(Collectors.toList());
+    //
+    // return ApiResponse.success("Users found", dtos);
+    // } catch (Exception e) {
+    // log.error("查询用户列表出错", e);
+    // return ApiResponse.error("查询用户列表失败: " + e.getMessage());
+    // }
+    // }
 
     public ApiResponse<?> getUserById(Long id) {
         Optional<SysUser> user = userRepository.findById(id);
@@ -95,9 +97,10 @@ public class UserService {
             return ApiResponse.error("SysUser not found");
         }
         SysUser sysUser = user.get();
-        String deptName = Objects.requireNonNull(deptRepository.findById(sysUser.getDeptId()).orElse(null)).getDeptName();
+        String deptName = Objects.requireNonNull(deptRepository.findById(sysUser.getDeptId()).orElse(null))
+                .getDeptName();
 
-        UserDto dto = userMapper.toDto(user.get(),deptName);
+        UserDto dto = userMapper.toDto(user.get(), deptName);
         return ApiResponse.success("Users found", dto);
     }
 
@@ -107,7 +110,7 @@ public class UserService {
 
         String deptName = Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
 
-        UserDto dto = userMapper.toDto(userRepository.save(user),deptName);
+        UserDto dto = userMapper.toDto(userRepository.save(user), deptName);
         return ApiResponse.success("SysUser created", dto);
     }
 

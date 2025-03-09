@@ -1,5 +1,6 @@
 package com.example.springboottyy.model;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,6 +53,9 @@ public class LoginUser implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
+    public LoginUser() {
+    }
+
     public LoginUser(SysUser user, Set<String> permissions) {
         this.user = user;
         this.permissions = permissions;
@@ -78,6 +82,7 @@ public class LoginUser implements UserDetails {
         return null;
     }
 
+    @JSONField(serialize = false)
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -88,9 +93,27 @@ public class LoginUser implements UserDetails {
         return user.getUsername();
     }
 
+    @JSONField(serialize = false)
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JSONField(serialize = false)
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JSONField(serialize = false)
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     @Override
     public boolean isEnabled() {
-        return user.isEnabled();
+        return true;
     }
 
     @Override

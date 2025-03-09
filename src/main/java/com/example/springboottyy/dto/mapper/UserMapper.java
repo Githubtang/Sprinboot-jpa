@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-//    @Mapping(expression = "java(getDeptName(dept))", target = "deptName")
+    // @Mapping(expression = "java(getDeptName(dept))", target = "deptName")
     @Mapping(expression = "java(getRoleIds(user.getRoles()))", target = "roleIds")
     UserDto toDto(SysUser user, String deptName);
 

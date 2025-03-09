@@ -36,6 +36,7 @@ public class ApiResponse<T> extends HashMap<String, Object> {
                 ", data=" + data +
                 '}';
     }
+
     /**
      * 返回成功消息
      *
@@ -44,14 +45,17 @@ public class ApiResponse<T> extends HashMap<String, Object> {
     public static <T> ApiResponse<T> success() {
         return ApiResponse.success("操作成功");
     }
+
     public static <T> ApiResponse<T> success(String message) {
-        return ApiResponse.success("操作成功",null);
+        return ApiResponse.success("操作成功", null);
     }
+
     public static <T> ApiResponse<T> success(T data) {
-        return ApiResponse.success("操作成功",data);
+        return ApiResponse.success("操作成功", data);
     }
-    public static <T> ApiResponse<T> success(String message,T data) {
-        return new  ApiResponse<>(HttpStatus.SUCCESS,message,data);
+
+    public static <T> ApiResponse<T> success(String message, T data) {
+        return new ApiResponse<>(HttpStatus.SUCCESS, message, data);
     }
 
     /**
@@ -61,24 +65,27 @@ public class ApiResponse<T> extends HashMap<String, Object> {
      * @return 警告消息
      */
     public static <T> ApiResponse<T> warning(String message) {
-        return ApiResponse.warning(message,null);
-    }
-    public static <T> ApiResponse<T> warning(String message,T data) {
-        return new  ApiResponse<>(HttpStatus.WARN,message,data);
+        return ApiResponse.warning(message, null);
     }
 
+    public static <T> ApiResponse<T> warning(String message, T data) {
+        return new ApiResponse<>(HttpStatus.WARN, message, data);
+    }
 
     public static <T> ApiResponse<T> error() {
         return ApiResponse.error("操作失败");
     }
+
     public static <T> ApiResponse<T> error(String message) {
-        return ApiResponse.error(message,null);
+        return ApiResponse.error(message, null);
     }
-    public static <T> ApiResponse<T> error(String message,T data) {
-        return new  ApiResponse<>(HttpStatus.ERROR,message,data);
+
+    public static <T> ApiResponse<T> error(String message, T data) {
+        return new ApiResponse<>(HttpStatus.ERROR, message, data);
     }
-    public static <T> ApiResponse<T> error(int status,String message) {
-        return new  ApiResponse<>(status,message,null);
+
+    public static <T> ApiResponse<T> error(int status, String message) {
+        return new ApiResponse<>(status, message, null);
     }
 
     public ApiResponse<T> put(String key, Object value) {
@@ -87,40 +94,39 @@ public class ApiResponse<T> extends HashMap<String, Object> {
     }
 }
 
-
-///**
+/// **
 // * 返回成功消息
 // */
-//public static <T> ApiResponse<T> success() {
-//    return ApiResponse.success("操作成功", null);
-//}
+// public static <T> ApiResponse<T> success() {
+// return ApiResponse.success("操作成功", null);
+// }
 //
-//public static <T> ApiResponse<T> success(String message) {
-//    return ApiResponse.success(message, null);
-//}
+// public static <T> ApiResponse<T> success(String message) {
+// return ApiResponse.success(message, null);
+// }
 //
-//public static <T> ApiResponse<T> success(String message, T data) {
-//    return new ApiResponse<>("success", message, data);
-//}
+// public static <T> ApiResponse<T> success(String message, T data) {
+// return new ApiResponse<>("success", message, data);
+// }
 //
-///**
+/// **
 // * 返回警告消息
 // */
-//public static <T> ApiResponse<T> warning(String message, T data) {
-//    return new ApiResponse<>("warn", message, data);
-//}
+// public static <T> ApiResponse<T> warning(String message, T data) {
+// return new ApiResponse<>("warn", message, data);
+// }
 //
-///**
+/// **
 // * 返回错误消息
 // */
-//public static <T> ApiResponse<T> error() {
-//    return ApiResponse.error("filed");
-//}
+// public static <T> ApiResponse<T> error() {
+// return ApiResponse.error("filed");
+// }
 //
-//public static <T> ApiResponse<T> error(String message) {
-//    return ApiResponse.error(message, null);
-//}
+// public static <T> ApiResponse<T> error(String message) {
+// return ApiResponse.error(message, null);
+// }
 //
-//public static <T> ApiResponse<T> error(String message, T data) {
-//    return new ApiResponse<>("filed", message, data);
-//}
+// public static <T> ApiResponse<T> error(String message, T data) {
+// return new ApiResponse<>("filed", message, data);
+// }

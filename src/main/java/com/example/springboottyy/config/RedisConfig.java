@@ -25,9 +25,9 @@ import java.time.Duration;
 public class RedisConfig implements CachingConfigurer {
 
     @Bean
-    @Primary  //Primary 指定默认使用的bean
+    @Primary // Primary 指定默认使用的bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheConfiguration config = instanceConfig(3600 * 24 * 15L); //缓存30天
+        RedisCacheConfiguration config = instanceConfig(3600 * 24 * 15L); // 缓存30天
         return RedisCacheManager.builder(connectionFactory).cacheDefaults(config).transactionAware().build();// transactionAware支持事务操作
     }
 
@@ -37,13 +37,14 @@ public class RedisConfig implements CachingConfigurer {
         return RedisCacheManager.builder(connectionFactory).cacheDefaults(config).transactionAware().build();
     }
 
-    @SuppressWarnings(value = {"unchecked", "rawtypes"})
+    @SuppressWarnings(value = { "unchecked", "rawtypes" })
     private RedisCacheConfiguration instanceConfig(Long ttl) {
         FastJson2JsonRedisSerializer serializer = new FastJson2JsonRedisSerializer(Object.class);
-        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(ttl)) //缓存时间以秒计算
+        return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(ttl)) // 缓存时间以秒计算
                 .disableCachingNullValues()
                 .computePrefixWith(name -> name + ":")
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
     }
 
@@ -79,7 +80,7 @@ public class RedisConfig implements CachingConfigurer {
      * 限流脚本
      */
     private String limitScriptText() {
-        String  a = """
+        String a = """
                 local key = KEYS[1]
                 local count = tonumber(ARGV[1])
                 local time = tonumber(ARGV[2])
@@ -93,20 +94,6 @@ public class RedisConfig implements CachingConfigurer {
                 end
                 return tonumber(current);
                 """;
-        String b =
-                "local key = KEYS[1]\n" +
-                "local count = tonumber(ARGV[1])\n" +
-                "local time = tonumber(ARGV[2])\n" +
-                "local current = redis.call('get', key);\n" +
-                "if current and tonumber(current) > count then\n" +
-                "    return tonumber(current);\n" +
-                "end\n" +
-                "current = redis.call('incr', key)\n" +
-                "if tonumber(current) == 1 then\n" +
-                "    redis.call('expire', key, time)\n" +
-                "end\n" +
-                "return tonumber(current);";
-
         return a;
 
     }

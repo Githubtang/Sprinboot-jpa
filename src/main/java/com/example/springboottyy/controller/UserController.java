@@ -36,7 +36,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllUsers() {
         ApiResponse<?> response = userService.findAll();
-        return ResponseEntity.ok(ApiResponse.success("成功",response.getData()));
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "获取用户")
@@ -62,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /*开启全部用户*/
+    /* 开启全部用户 */
     @Operation(summary = "开启全部用户")
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/upUser")
@@ -80,7 +80,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /*添加角色*/
+    /* 添加角色 */
     @Operation(summary = "添加角色")
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/addAuthRole")
@@ -89,20 +89,20 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /*添加部门*/
+    /* 添加部门 */
     @Operation(summary = "添加部门")
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/addDept")
-    public ResponseEntity<ApiResponse<?>> addPermission(@Valid @RequestBody AuthDeptRequest deptRequest){
+    public ResponseEntity<ApiResponse<?>> addPermission(@Valid @RequestBody AuthDeptRequest deptRequest) {
         ApiResponse<SysUser> response = userService.addUserDept(deptRequest.getUserId(), deptRequest.getDeptId());
         return ResponseEntity.ok(response);
     }
 
-    /*添加岗位*/
+    /* 添加岗位 */
     @Operation(summary = "添加岗位")
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @PostMapping("/addPost")
-    public ResponseEntity<ApiResponse<?>> addDept(@Valid @RequestBody AuthPostRequest postRequest){
+    public ResponseEntity<ApiResponse<?>> addDept(@Valid @RequestBody AuthPostRequest postRequest) {
         ApiResponse<?> response = userService.addUserPost(postRequest.getUserId(), postRequest.getPostIds());
         return ResponseEntity.ok(response);
     }
