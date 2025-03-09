@@ -57,6 +57,13 @@ public class LoginUser implements UserDetails {
         this.permissions = permissions;
     }
 
+    public LoginUser(Long id, Long deptId, SysUser user, Set<String> permissions) {
+        this.id = id;
+        this.deptId = deptId;
+        this.user = user;
+        this.permissions = permissions;
+    }
+
     public LoginUser(Long id, Long deptId, SysUser user, Set<String> permissions,
                      Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -68,7 +75,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return null;
     }
 
     @Override

@@ -164,9 +164,9 @@ public class UserService {
             SysRole role = optionalRole.get();
             user.getRoles().add(role);
             userRepository.save(user);
-            return new ApiResponse<>("success", "useraddrole ok", user);
+            return new ApiResponse<>(200, "useraddrole ok", user);
         }
-        return new ApiResponse<>("filed", "useraddrole filed", null);
+        return new ApiResponse<>(500, "useraddrole filed", null);
     }
 
     /* 用户查询角色 */

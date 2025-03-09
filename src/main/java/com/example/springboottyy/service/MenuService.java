@@ -38,27 +38,27 @@ public class MenuService {
     public ApiResponse<?> findAll() {
         List<SysMenu> all = menuRepository.findAll();
         if (all.isEmpty()) {
-            return new ApiResponse<>("error", "menu not font", null);
+            return new ApiResponse<>(500, "menu not font", null);
         }
-        return new ApiResponse<>("success", "menu font", all);
+        return new ApiResponse<>(200, "menu font", all);
     }
 
     public ApiResponse<?> findAllById(List<Long> menuIds) {
         List<SysMenu> all = menuRepository.findAllById(menuIds);
         if (all.isEmpty()) {
-            return new ApiResponse<>("error", "menu not font", null);
+            return new ApiResponse<>(500, "menu not font", null);
         }
-        return new ApiResponse<>("success", "menu font", all);
+        return new ApiResponse<>(200, "menu font", all);
     }
 
     public ApiResponse<?> findById(Long id) {
         Optional<SysMenu> permission = menuRepository.findById(id);
-        return permission.map(value -> new ApiResponse<>("success", "menu font", value)).orElseGet(() -> new ApiResponse<>("error", "menu not font", null));
+        return permission.map(value -> new ApiResponse<>(200, "menu font", value)).orElseGet(() -> new ApiResponse<>(500, "menu not font", null));
     }
 
     public ApiResponse<?> createMenu(SysMenu menu) {
         SysMenu menu1 = menuRepository.save(menu);
-        return new ApiResponse<>("success", "create ok", menu1);
+        return new ApiResponse<>(200, "create ok", menu1);
     }
 
     public ApiResponse<?> softDeleteMenu(Long id) {

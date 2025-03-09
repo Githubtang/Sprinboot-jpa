@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -41,6 +42,12 @@ public class SysUser extends BaseEntity implements Serializable {
 
     @Schema(description = "启用true/禁用false")
     private boolean enabled = Boolean.TRUE;
+
+    @Schema(title = "最后登录IP")
+    private String loginIp;
+
+    @Schema(title = "最后登录时间")
+    private LocalDateTime loginDate;
 
     @Schema(description = "创建时间")
     private LocalDateTime createdAt;

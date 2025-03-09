@@ -56,9 +56,9 @@ public class RoleService {
             SysRole role = optionalRole.get();
             role.setDeleted(false);
             roleRepository.save(role);
-            return new ApiResponse<>("200", "SysRole deleted", role);
+            return new ApiResponse<>(200, "SysRole deleted", role);
         }
-        return new ApiResponse<>("400", "role not font", null);
+        return new ApiResponse<>(400, "role not font", null);
     }
 
     // 获取用户角色
@@ -67,7 +67,7 @@ public class RoleService {
         if (optionalSysUser.isPresent()) {
             SysUser sysUser = optionalSysUser.get();
             Set<SysRole> roles = sysUser.getRoles();
-            return new ApiResponse<>("200", "roles", roles);
+            return new ApiResponse<>(200, "roles", roles);
         }
         return ApiResponse.error("role not font");
     }
@@ -76,7 +76,7 @@ public class RoleService {
     public ApiResponse<?> addMenuToRole(Long roleId, Set<Long> menuIds) {
         Optional<SysRole> optionalRole = roleRepository.findById(roleId);
         if (optionalRole.isEmpty()) {
-            return new ApiResponse<>("400", "role not font", null);
+            return new ApiResponse<>(400, "role not font", null);
         }
         SysRole role = optionalRole.get();
 
@@ -84,11 +84,11 @@ public class RoleService {
         List<SysMenu> menus = menuRepository.findAllById(menuIds);
         if (menus.isEmpty()) {
             role.setMenus(new HashSet<>());
-            return new ApiResponse<>("400", "permission not font", null);
+            return new ApiResponse<>(400, "permission not font", null);
         }
         role.setMenus(new LinkedHashSet<>(menus));
         roleRepository.save(role);
-        return new ApiResponse<>("200", "menus added successfully", null);
+        return new ApiResponse<>(200, "menus added successfully", null);
     }
 
     /*根据用户id查询角色权限*/

@@ -2,7 +2,6 @@ package com.example.springboottyy.utils;
 
 import com.example.springboottyy.common.constant.CacheConstants;
 import com.example.springboottyy.common.constant.Constants;
-import com.example.springboottyy.exception.TokenExpiredException;
 import com.example.springboottyy.model.LoginUser;
 import com.example.springboottyy.utils.ip.AddressUtils;
 import com.example.springboottyy.utils.ip.IpUtils;
@@ -15,12 +14,10 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -47,15 +44,6 @@ public class JwtUtil {
 
     private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
 
-    @Autowired
-    private HttpServletRequest request;
-
-    private final RedisCache redisCache;
-
-    public JwtUtil(RedisCache redisCache) {
-        this.redisCache = redisCache;
-    }
-
     /**
      * 获取用户身份信息
      *
@@ -63,13 +51,14 @@ public class JwtUtil {
      */
     public LoginUser getLoginUser(HttpServletRequest request) {
         String token = getToken(request);
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isNotEmpty(token)) {
             try {
                 Claims claims = extractClaims(token);
                 // 提取对应的权限及用户信息
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
                 return CacheUtils.get(CacheConstants.LOGIN_TOKEN_KEY, uuid, LoginUser.class);
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                log.error(e.getMessage());
             }
         }
         return null;
@@ -191,68 +180,77 @@ public class JwtUtil {
         }
         return null;
     }
-
-    /**
-     * 从数据中生成token
-     *
-     * @param username 数据声明
-     * @return token
-     */
-    public String generateToken(String username) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
-        String token = Jwts.builder()
-                .subject(username)
-                .signWith(key)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
-                .compact();
-        // 将token存入redis + timeout
-        redisCache.setToken(token, username, TOKEN_VALIDITY);
-        return token;
-    }
-
-    public String extractUsername(String token) {
-        return extractClaims(token).getSubject();
-    }
-
-    public Date extractExpiration(String token) {
-        return extractClaims(token).getExpiration();
-    }
-
-
-
-    /**
-     * 清除token
-     *
-     * @param token
-     */
-    public void invalidateToken(String token) {
-        if (redisCache.hasToken(token)) {
-            redisCache.delToken(token);
-        }
-    }
-
-    public Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    public Boolean validateToken(String token, String username) {
-        if (!redisCache.hasToken(token)) {
-            return false;
-        }
-        final String extractedUsername = extractUsername(token);
-        return extractedUsername.equals(username) && !isTokenExpired(token);
-    }
-
-
-
-    public String refreshToken() throws TokenExpiredException {
-        String token = getToken(request);
-        if (isTokenExpired(token)) {
-            throw new TokenExpiredException("token is expired");
-        }
-        String username = extractUsername(token);
-        return generateToken(username);
-    }
-
 }
+
+/*
+ version : 1.0
+*/
+/**
+ * 从数据中生成token
+ *
+ * @param username 数据声明
+ * @return token
+ * <p>
+ * 清除token
+ * @param token
+ *//*
+
+public String generateToken(String username) {
+    SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+    String token = Jwts.builder()
+            .subject(username)
+            .signWith(key)
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
+            .compact();
+    // 将token存入redis + timeout
+    redisCache.setToken(token, username, TOKEN_VALIDITY);
+    return token;
+}
+
+public String extractUsername(String token) {
+    return extractClaims(token).getSubject();
+}
+
+public Date extractExpiration(String token) {
+    return extractClaims(token).getExpiration();
+}
+
+
+
+*/
+/**
+ * 清除token
+ *
+ * @param token
+ *//*
+
+public void invalidateToken(String token) {
+    if (redisCache.hasToken(token)) {
+        redisCache.delToken(token);
+    }
+}
+
+public Boolean isTokenExpired(String token) {
+    return extractExpiration(token).before(new Date());
+}
+
+public Boolean validateToken(String token, String username) {
+    if (!redisCache.hasToken(token)) {
+        return false;
+    }
+    final String extractedUsername = extractUsername(token);
+    return extractedUsername.equals(username) && !isTokenExpired(token);
+}
+
+
+
+public String refreshToken() throws TokenExpiredException {
+    String token = getToken(request);
+    if (isTokenExpired(token)) {
+        throw new TokenExpiredException("token is expired");
+    }
+    String username = extractUsername(token);
+    return generateToken(username);
+}
+*/

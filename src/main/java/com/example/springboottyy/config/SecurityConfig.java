@@ -29,7 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @Version: 1.0
  */
 @Configuration
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true,securedEnabled = true)
 public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
     private final JwtRequestFilter jwtRequestFilter;
@@ -48,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login","/register","/logs/").permitAll() // 允许所有人访问 "/public/**" 路径
+                        .requestMatchers("/login","/register","/logs/","/error").permitAll() // 允许所有人访问 "/public/**" 路径
 //                        .requestMatchers("/api/role/**", "/api/menu/**").hasRole("admin")
                         .requestMatchers(HttpMethod.GET, "/", "/**.html", "/**.css", "/**.js","/**.ico",
                                 "/profile/**").permitAll()
@@ -59,7 +59,8 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(authenticationEntryPoint)
+                        // security的权限认证失败Handler 这里就不使用了 ruoyi有一套自己的权限
+//                        .accessDeniedHandler(authenticationEntryPoint)
                 )
                 .logout(logout -> logout.
                         logoutUrl("/logout")
@@ -70,6 +71,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        // 添加JWT filter
                 ).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

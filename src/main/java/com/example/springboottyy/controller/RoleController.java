@@ -31,7 +31,7 @@ public class RoleController {
     @PostMapping
     public ResponseEntity<ApiResponse<?>> getAllRoles() {
         List<SysRole> all = roleService.findAll();
-        ApiResponse<?> response = new ApiResponse<>("200", "success", all);
+        ApiResponse<?> response = new ApiResponse<>(200, "success", all);
         return ResponseEntity.ok(response);
     }
 
@@ -40,7 +40,7 @@ public class RoleController {
     @PostMapping("/getRole")
     public ResponseEntity<ApiResponse<?>> getRole(@RequestBody Long roleId) {
         SysRole byId = roleService.findById(roleId);
-        ApiResponse<?> response = new ApiResponse<>("200", "success", byId);
+        ApiResponse<?> response = new ApiResponse<>(200, "success", byId);
         return ResponseEntity.ok(response);
     }
 
@@ -49,7 +49,7 @@ public class RoleController {
     @PostMapping("/createRole")
     public ResponseEntity<ApiResponse<?>> addRole(@RequestBody SysRole role) {
         SysRole role1 = roleService.createRole(role);
-        ApiResponse<?> response = new ApiResponse<>("200", "success", role1);
+        ApiResponse<?> response = new ApiResponse<>(200, "success", role1);
         return ResponseEntity.ok(response);
     }
 

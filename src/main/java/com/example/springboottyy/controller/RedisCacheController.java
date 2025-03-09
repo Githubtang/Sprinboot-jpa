@@ -53,7 +53,7 @@ public class RedisCacheController {
             pieList.add(data);
         });
         result.put("pieList", pieList);
-        ApiResponse<?> response = new ApiResponse<>("200", "success", result);
+        ApiResponse<?> response = new ApiResponse<>(200, "success", result);
         return ResponseEntity.ok(response);
     }
 }
