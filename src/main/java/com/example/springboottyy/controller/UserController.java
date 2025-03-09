@@ -3,7 +3,6 @@ package com.example.springboottyy.controller;
 import com.example.springboottyy.dto.request.AuthDeptRequest;
 import com.example.springboottyy.dto.request.AuthPostRequest;
 import com.example.springboottyy.dto.request.AuthRoleRequest;
-import com.example.springboottyy.dto.request.LoginRequest;
 import com.example.springboottyy.model.SysUser;
 import com.example.springboottyy.service.UserService;
 import com.example.springboottyy.utils.ApiResponse;

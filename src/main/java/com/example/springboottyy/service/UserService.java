@@ -1,10 +1,11 @@
 package com.example.springboottyy.service;
 
-import com.example.springboottyy.annotation.DataScope;
-import com.example.springboottyy.aspect.DataScopeAspect;
 import com.example.springboottyy.dto.UserDto;
 import com.example.springboottyy.dto.mapper.UserMapper;
-import com.example.springboottyy.model.*;
+import com.example.springboottyy.model.SysDept;
+import com.example.springboottyy.model.SysPost;
+import com.example.springboottyy.model.SysRole;
+import com.example.springboottyy.model.SysUser;
 import com.example.springboottyy.repository.SysDeptRepository;
 import com.example.springboottyy.repository.SysPostRepository;
 import com.example.springboottyy.repository.SysRoleRepository;
