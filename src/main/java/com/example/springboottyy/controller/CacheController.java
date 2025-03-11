@@ -14,10 +14,7 @@ import org.springframework.cache.Cache;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: GithubTang
@@ -61,7 +58,7 @@ public class CacheController {
         @Parameter(name = "cacheName",description = "缓存名称",required = true)
     })
     @PostMapping("/getKeys")
-    public ApiResponse<?> getCacheKeys(@RequestBody String cacheName){
+    public ApiResponse<?> getCacheKeys(@RequestParam String cacheName){
         tmpCacheName = cacheName;
         Set<String> keys = CacheUtils.getKeys(cacheName);
         return ApiResponse.success("查询成功",keys);

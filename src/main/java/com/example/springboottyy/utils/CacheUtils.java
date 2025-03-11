@@ -56,7 +56,7 @@ public class CacheUtils {
      * @param value
      * @param <T>
      */
-    public static <T> void pub(String cacheName, String key,T value) {
+    public static <T> void put(String cacheName, String key,T value) {
         put(cacheName,key,value,0,null);
     }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import lombok.Getter;
 
@@ -19,6 +20,7 @@ import java.util.Map;
  * @Version: 1.0
  */
 @Data
+@MappedSuperclass
 @Schema(title = "基类")
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;

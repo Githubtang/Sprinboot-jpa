@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +20,9 @@ import java.util.Set;
  * @Version: 1.0
  */
 @Schema(description = "用户")
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 public class SysUser extends BaseEntity implements Serializable {
     @Id

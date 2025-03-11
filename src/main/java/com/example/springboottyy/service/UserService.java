@@ -2,6 +2,7 @@ package com.example.springboottyy.service;
 
 import com.example.springboottyy.dto.UserDto;
 import com.example.springboottyy.dto.mapper.UserMapper;
+import com.example.springboottyy.exception.ServiceException;
 import com.example.springboottyy.model.SysDept;
 import com.example.springboottyy.model.SysPost;
 import com.example.springboottyy.model.SysRole;
@@ -10,8 +11,10 @@ import com.example.springboottyy.repository.SysDeptRepository;
 import com.example.springboottyy.repository.SysPostRepository;
 import com.example.springboottyy.repository.SysRoleRepository;
 import com.example.springboottyy.repository.SysUserRepository;
-import com.example.springboottyy.utils.ApiResponse;
-import com.example.springboottyy.utils.JwtUtil;
+import com.example.springboottyy.service.impl.SysConfigService;
+import com.example.springboottyy.utils.*;
+import com.example.springboottyy.utils.bean.BeanValidators;
+import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +53,26 @@ public class UserService {
     private SysPostRepository postRepository;
 
     @Autowired
+    private SysConfigService configService;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
+    protected Validator validator;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    /**
+     * 根据条件分页查询用户列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    public List<SysUser> selectUserList(SysUser user) {
+        return null;
+    }
 
     @Transactional
     public ApiResponse<?> findAll() {
@@ -69,28 +88,6 @@ public class UserService {
 
         return ApiResponse.success("Users found", dtos);
     }
-
-    // @Transactional
-    // @DataScope(deptAlias = "d", userAlias = "u") // 数据权限
-    // public ApiResponse<?> findAll() {
-    // try {
-    // List<SysUser> users = userRepository.findAll();
-    //
-    // if (users.isEmpty()) {
-    // return ApiResponse.error("No users found");
-    // }
-    // List<UserDto> dtos = users.stream().map(user -> {
-    // String deptName =
-    // Objects.requireNonNull(deptRepository.findById(user.getDeptId()).orElse(null)).getDeptName();
-    // return userMapper.toDto(user, deptName);
-    // }).collect(Collectors.toList());
-    //
-    // return ApiResponse.success("Users found", dtos);
-    // } catch (Exception e) {
-    // log.error("查询用户列表出错", e);
-    // return ApiResponse.error("查询用户列表失败: " + e.getMessage());
-    // }
-    // }
 
     public ApiResponse<?> getUserById(Long id) {
         Optional<SysUser> user = userRepository.findById(id);
@@ -131,6 +128,67 @@ public class UserService {
         user.setEnabled(false);
         userRepository.save(user);
         return ApiResponse.success("user deleted", true);
+    }
+
+
+    /**
+     * 导入用户数据
+     *
+     * @param userList        用户数据列表
+     * @param isUpdateSupport 是否更新支持，如果已存在，则进行更新数据
+     * @param operName        操作用户
+     * @return 结果
+     */
+    public ApiResponse<?> importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName) {
+        if (userList.isEmpty()) {
+            throw new ServiceException("导入用户数据不能为空！");
+        }
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsd = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        String password = configService.selectConfigByKey("sys.user.initPassword");
+        for (SysUser user : userList) {
+            try {
+                //验证是否存在这个用户
+                SysUser sysUser = userRepository.findByUsername(user.getUsername());
+                if (StringUtils.isNull(sysUser)){
+                    BeanValidators.validateWithException(validator,user);
+                    checkUserAllowed(user);
+                }
+            }catch (Exception e){
+
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 校验用户是否允许操作
+     *
+     * @param user 用户信息
+     */
+    public void checkUserAllowed(SysUser user) {
+        if (StringUtils.isNotNull(user.getId()) && user.isAdmin()) {
+            throw new ServiceException("不允许操作超级管理员用户");
+        }
+    }
+
+    /**
+     * 校验用户是否有数据权限
+     *
+     * @param userId 用户id
+     */
+    public void checkUserDataScope(Long userId) {
+        SysUser sysUser = userRepository.findById(userId).get();
+        if (!sysUser.isAdmin()) {
+            SysUser user = new SysUser();
+            user.setId(userId);
+            List<SysUser> users = SpringUtils.getAopProxy(this).selectUserList(user);
+            if (StringUtils.isEmpty(users)) {
+                throw new ServiceException("没有权限访问用户数据！");
+            }
+        }
     }
 
     /* 开启所有用户 */
