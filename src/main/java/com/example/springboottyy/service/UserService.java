@@ -70,9 +70,25 @@ public class UserService {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    public List<SysUser> selectUserList(SysUser user) {
-        return null;
+    public ApiResponse<?> selectUserList(SysUser user) {
+        ApiResponse<?> all = findAll();
+        return all;
     }
+
+    /**
+     * 根据条件分页查询已分配用户角色列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+
+
+    /**
+     * 根据条件分页查询未分配用户角色列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
 
     @Transactional
     public ApiResponse<?> findAll() {
