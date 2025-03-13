@@ -100,11 +100,13 @@ public class SysConfigService {
      * @param config 参数配置信息
      * @return 结果
      */
-    public void insertConfig(SysConfig config) {
+    public int insertConfig(SysConfig config) {
         SysConfig save = repository.save(config);
         if (!ObjectUtils.isEmpty(save)) {
             CacheUtils.put(CacheConstants.SYS_CONFIG_KEY, config.getConfigKey(), config.getConfigValue());
+            return 1;
         }
+        return 0;
     }
 
     /**

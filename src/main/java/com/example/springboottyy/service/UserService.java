@@ -1,5 +1,6 @@
 package com.example.springboottyy.service;
 
+import com.example.springboottyy.common.constant.HttpStatus;
 import com.example.springboottyy.dto.UserDto;
 import com.example.springboottyy.dto.mapper.UserMapper;
 import com.example.springboottyy.exception.ServiceException;
@@ -63,32 +64,6 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    /**
-     * 根据条件分页查询用户列表
-     *
-     * @param user 用户信息
-     * @return 用户信息集合信息
-     */
-    public ApiResponse<?> selectUserList(SysUser user) {
-        ApiResponse<?> all = findAll();
-        return all;
-    }
-
-    /**
-     * 根据条件分页查询已分配用户角色列表
-     *
-     * @param user 用户信息
-     * @return 用户信息集合信息
-     */
-
-
-    /**
-     * 根据条件分页查询未分配用户角色列表
-     *
-     * @param user 用户信息
-     * @return 用户信息集合信息
-     */
 
     @Transactional
     public ApiResponse<?> findAll() {
@@ -200,11 +175,26 @@ public class UserService {
         if (!sysUser.isAdmin()) {
             SysUser user = new SysUser();
             user.setId(userId);
-            List<SysUser> users = SpringUtils.getAopProxy(this).selectUserList(user);
+            ApiResponse<?> users = SpringUtils.getAopProxy(this).findAll();
             if (StringUtils.isEmpty(users)) {
                 throw new ServiceException("没有权限访问用户数据！");
             }
         }
+    }
+
+    /**
+     * 注册用户信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    public boolean registerUser(SysUser user) {
+        try {
+            userRepository.save(user);
+        }catch (Exception e){
+            throw new ServiceException("注册失败", HttpStatus.ERROR);
+        }
+        return true;
     }
 
     /* 开启所有用户 */
@@ -242,9 +232,9 @@ public class UserService {
             SysRole role = optionalRole.get();
             user.getRoles().add(role);
             userRepository.save(user);
-            return new ApiResponse<>(200, "useraddrole ok", user);
+            return new ApiResponse<>(200, "useradd role ok", user);
         }
-        return new ApiResponse<>(500, "useraddrole filed", null);
+        return new ApiResponse<>(500, "useradd role filed", null);
     }
 
     /* 用户查询角色 */
