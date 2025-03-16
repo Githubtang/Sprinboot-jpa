@@ -1,8 +1,10 @@
 package com.example.springboottyy.controller;
 
+import com.example.springboottyy.annotation.Log;
 import com.example.springboottyy.dto.request.AuthDeptRequest;
 import com.example.springboottyy.dto.request.AuthPostRequest;
 import com.example.springboottyy.dto.request.AuthRoleRequest;
+import com.example.springboottyy.enums.BusinessType;
 import com.example.springboottyy.model.SysUser;
 import com.example.springboottyy.service.UserService;
 import com.example.springboottyy.utils.ApiResponse;
@@ -32,6 +34,7 @@ public class UserController {
 
     @Operation(summary = "获取用户列表")
     @PreAuthorize("@ss.hasPermi('system:user:list')")
+    @Log(title = "用户管理",businessType = BusinessType.OTHER)
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllUsers() {
         ApiResponse<?> response = userService.findAll();

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
+import jakarta.persistence.Transient;
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,8 +22,10 @@ import java.util.Map;
  * @Date: 2025/2/27 0:15
  * @Version: 1.0
  */
-@Data
+@Getter
+@Setter
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 @Schema(title = "基类")
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -70,6 +75,7 @@ public class BaseEntity implements Serializable {
      */
     @Schema(title = "请求参数")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Transient
     private Map<String, Object> params;
 
     public Map<String, Object> getParams() {

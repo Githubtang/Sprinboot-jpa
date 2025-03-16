@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * @Author: GithubTang
- * @Description: TODO
+ * @Description: 通用http发送方法
  * @Date: 2025/3/7 23:16
  * @Version: 1.0
  */

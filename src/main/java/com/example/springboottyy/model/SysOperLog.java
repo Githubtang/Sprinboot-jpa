@@ -2,11 +2,9 @@ package com.example.springboottyy.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -17,7 +15,16 @@ import java.util.Date;
  * @Version: 1.0
  */
 @Entity
-@Data
+@Getter
+@Setter
+@AttributeOverrides({
+        @AttributeOverride(name = "searchValue",column = @Column(name = "search_value",insertable = false,updatable = false)),
+        @AttributeOverride(name = "createBy",column = @Column(name = "create_by",insertable = false,updatable = false)),
+        @AttributeOverride(name = "updateBy",column = @Column(name = "update_by",insertable = false,updatable = false)),
+        @AttributeOverride(name = "createTime",column = @Column(name = "create_time",insertable = false,updatable = false)),
+        @AttributeOverride(name = "remark",column = @Column(name = "remark",insertable = false,updatable = false)),
+        @AttributeOverride(name = "updateTime",column = @Column(name = "update_time",insertable = false,updatable = false)),
+})
 @Schema(title = "操作日志记录表")
 public class SysOperLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
@@ -25,7 +32,6 @@ public class SysOperLog extends BaseEntity {
     /**
      * 日志主键
      */
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Schema(title = "操作序号")
@@ -47,6 +53,7 @@ public class SysOperLog extends BaseEntity {
      * 请求方法
      */
     @Schema(title = "请求方法")
+    @Column(length = 100)
     private String method;
 
     /**
@@ -95,12 +102,14 @@ public class SysOperLog extends BaseEntity {
      * 请求参数
      */
     @Schema(title = "请求参数")
+    @Column(length = 2000)
     private String operParam;
 
     /**
      * 返回参数
      */
     @Schema(title = "返回参数")
+    @Column(length = 2000)
     private String jsonResult;
 
     /**
@@ -113,6 +122,7 @@ public class SysOperLog extends BaseEntity {
      * 错误消息
      */
     @Schema(title = "错误消息")
+    @Column(length = 2000)
     private String errorMsg;
 
     /**
