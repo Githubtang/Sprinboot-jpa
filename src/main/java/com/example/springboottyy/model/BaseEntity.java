@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -51,17 +49,17 @@ public class BaseEntity implements Serializable {
     private Date createTime;
 
     /**
-     * 更新者
-     */
-    @Schema(title = "更新者")
-    private String updateBy;
-
-    /**
      * 更新时间
      */
     @Schema(title = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    /**
+     * 更新者
+     */
+    @Schema(title = "更新者")
+    private String updateBy;
 
     /**
      * 备注
@@ -83,6 +81,19 @@ public class BaseEntity implements Serializable {
             params = new HashMap<>();
         }
         return params;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (createTime == null) {
+            createTime = new Date(System.currentTimeMillis());
+        }
+        updateTime = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updateTime = new Date(System.currentTimeMillis());
     }
 
 }
