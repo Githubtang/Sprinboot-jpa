@@ -17,14 +17,6 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@AttributeOverrides({
-        @AttributeOverride(name = "searchValue",column = @Column(name = "search_value",insertable = false,updatable = false)),
-        @AttributeOverride(name = "createBy",column = @Column(name = "create_by",insertable = false,updatable = false)),
-        @AttributeOverride(name = "updateBy",column = @Column(name = "update_by",insertable = false,updatable = false)),
-        @AttributeOverride(name = "createTime",column = @Column(name = "create_time",insertable = false,updatable = false)),
-        @AttributeOverride(name = "remark",column = @Column(name = "remark",insertable = false,updatable = false)),
-        @AttributeOverride(name = "updateTime",column = @Column(name = "update_time",insertable = false,updatable = false)),
-})
 @Schema(title = "操作日志记录表")
 public class SysOperLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
