@@ -5,6 +5,7 @@ import com.example.springboottyy.model.SysLogininfor;
 import com.example.springboottyy.model.SysOperLog;
 import com.example.springboottyy.repository.SysLogininforRepository;
 import com.example.springboottyy.repository.SysOperLogRepository;
+import com.example.springboottyy.service.SysLogininforService;
 import com.example.springboottyy.utils.LogUtils;
 import com.example.springboottyy.utils.ServletUtils;
 import com.example.springboottyy.utils.SpringUtils;
@@ -70,7 +71,7 @@ public class AsyncFactory {
                     logininfor.setStatus(Constants.FAIL);
                 }
                 // 插入数据
-                SpringUtils.getBean(SysLogininforRepository.class).save(logininfor);
+                SpringUtils.getBean(SysLogininforService.class).insertLogininfor(logininfor);
             }
         };
     }

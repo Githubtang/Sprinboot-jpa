@@ -2,11 +2,9 @@ package com.example.springboottyy.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
@@ -18,7 +16,9 @@ import java.util.Objects;
  * @Date: 2025/3/8 2:06
  * @Version: 1.0
  */
-@Data
+@Getter
+@Setter
+@Schema(title = "系统访问记录表")
 @Entity
 public class SysLogininfor extends BaseEntity{
     private static final long serialVersionUID = 1L;
@@ -26,7 +26,7 @@ public class SysLogininfor extends BaseEntity{
     /** ID */
     @Id
     @Schema(title = "序号")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /** 用户账号 */
@@ -59,8 +59,19 @@ public class SysLogininfor extends BaseEntity{
 
     /** 访问时间 */
     @Schema(title = "访问时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime loginTime;
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        loginTime = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        loginTime = LocalDateTime.now();
+    }
 
     @Override
     public final boolean equals(Object o) {

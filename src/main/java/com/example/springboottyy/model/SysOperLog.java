@@ -25,7 +25,7 @@ public class SysOperLog extends BaseEntity {
      * 日志主键
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(title = "操作序号")
     private Long id;
 

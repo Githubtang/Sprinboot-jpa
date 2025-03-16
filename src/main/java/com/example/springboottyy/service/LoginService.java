@@ -53,6 +53,7 @@ public class LoginService {
             // 该方法会去调用CustomUserDetailsService.loadUserByUsername
             authenticate = authenticationManager.authenticate(authenticationToken);
             // 生成 token
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username,Constants.LOGIN_SUCCESS,MessageUtils.message("user.login.success")));
             LoginUser user = (LoginUser) authenticate.getPrincipal();
             recordLoginInfo(user.getId());
             String token = jwtUtil.createToken(user);
@@ -66,8 +67,7 @@ public class LoginService {
              * version : 1.0
              * return ApiResponse.error("Invalid username or password", null);
              */
-            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL,
-                    MessageUtils.message("user.password.not.match")));
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL,MessageUtils.message("user.password.not.match")));
             throw new UserPasswordNotMatchException();
         } catch (Exception e) {
             /*
