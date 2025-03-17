@@ -52,9 +52,6 @@ public class SysLogininforController {
     }
 
     @Operation(summary = "账户解锁")
-    @Parameters({
-            @Parameter(name = "userName", description = "用户名", required = true),
-    })
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:unlock')")
     @PostMapping("/unlock")
     public ApiResponse<?> unlock(@RequestBody String userName) {

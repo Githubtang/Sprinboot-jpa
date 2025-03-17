@@ -32,7 +32,7 @@ public class SysConfigController {
      */
     @Operation(summary = "获取参数配置列表")
     @PreAuthorize("@ss.hasPermi('system:config:list')")
-    @RequestMapping("/findAll")
+    @PostMapping("/findAll")
     public ApiResponse<?> findAll(@RequestBody SysConfig sysConfig) {
         List<SysConfig> configs = sysConfigService.selectConfigList(sysConfig);
         return ApiResponse.success(configs);
@@ -43,7 +43,7 @@ public class SysConfigController {
      */
     @Operation(summary = "根据参数编号获取详细信息")
     @PreAuthorize("@ss.hasPermi('system:config:query')")
-    @RequestMapping("/findById")
+    @PostMapping("/findById")
     public ApiResponse<?> findById(@RequestBody Long configId) {
         SysConfig sysConfig = sysConfigService.selectConfigById(configId);
         return ApiResponse.success(sysConfig);

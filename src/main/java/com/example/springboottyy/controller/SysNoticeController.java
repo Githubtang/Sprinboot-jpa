@@ -56,7 +56,7 @@ public class SysNoticeController {
     @PostMapping
     public ApiResponse<?> add(@Validated @RequestBody SysNotice notice)
     {
-        notice.setUpdateBy(SecurityUtils.getLoginUser().getUsername());
+        notice.setCreateBy(SecurityUtils.getLoginUser().getUsername());
         return sysNoticeService.insertNotice(notice);
     }
 
